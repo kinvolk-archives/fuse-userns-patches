@@ -1,0 +1,34 @@
+From 1f2233a1a028f1eb1e9bea7d06efa6d34e69e752 Mon Sep 17 00:00:00 2001
+Message-Id: <1f2233a1a028f1eb1e9bea7d06efa6d34e69e752.1512041070.git.dongsu@kinvolk.io>
+In-Reply-To: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
+References: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
+From: Seth Forshee <seth.forshee@canonical.com>
+Date: Thu, 15 Dec 2016 11:03:08 -0600
+Subject: [PATCH 11/12] evm: Don't update hmacs in user ns mounts
+
+The kernel should not calculate new hmacs for mounts done by
+non-root users. Update evm_calc_hmac_or_hash() to refuse to
+calculate new hmacs for mounts for non-init user namespaces.
+
+Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+---
+ security/integrity/evm/evm_crypto.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
+index bcd64baf..729f4545 100644
+--- a/security/integrity/evm/evm_crypto.c
++++ b/security/integrity/evm/evm_crypto.c
+@@ -190,7 +190,8 @@ static int evm_calc_hmac_or_hash(struct dentry *dentry,
+ 	int error;
+ 	int size;
+ 
+-	if (!(inode->i_opflags & IOP_XATTR))
++	if (!(inode->i_opflags & IOP_XATTR) ||
++	    inode->i_sb->s_user_ns != &init_user_ns)
+ 		return -EOPNOTSUPP;
+ 
+ 	desc = init_desc(type);
+-- 
+2.13.6
+

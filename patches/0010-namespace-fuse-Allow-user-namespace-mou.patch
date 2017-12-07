@@ -1,0 +1,39 @@
+From a26103156b3f6ba73b1e46c6f577f1bee74872d9 Mon Sep 17 00:00:00 2001
+Message-Id: <a26103156b3f6ba73b1e46c6f577f1bee74872d9.1512041070.git.dongsu@kinvolk.io>
+In-Reply-To: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
+References: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
+From: Seth Forshee <seth.forshee@canonical.com>
+Date: Thu, 2 Oct 2014 15:51:41 -0500
+Subject: [PATCH 10/12] fuse: Allow user namespace mounts
+
+Acked-by: Miklos Szeredi <mszeredi@redhat.com>
+Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+---
+ fs/fuse/inode.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+index 7f6b2e55..8c98edee 100644
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -1212,7 +1212,7 @@ static void fuse_kill_sb_anon(struct super_block *sb)
+ static struct file_system_type fuse_fs_type = {
+ 	.owner		= THIS_MODULE,
+ 	.name		= "fuse",
+-	.fs_flags	= FS_HAS_SUBTYPE,
++	.fs_flags	= FS_HAS_SUBTYPE | FS_USERNS_MOUNT,
+ 	.mount		= fuse_mount,
+ 	.kill_sb	= fuse_kill_sb_anon,
+ };
+@@ -1244,7 +1244,7 @@ static struct file_system_type fuseblk_fs_type = {
+ 	.name		= "fuseblk",
+ 	.mount		= fuse_mount_blk,
+ 	.kill_sb	= fuse_kill_sb_blk,
+-	.fs_flags	= FS_REQUIRES_DEV | FS_HAS_SUBTYPE,
++	.fs_flags	= FS_REQUIRES_DEV | FS_HAS_SUBTYPE | FS_USERNS_MOUNT,
+ };
+ MODULE_ALIAS_FS("fuseblk");
+ 
+-- 
+2.13.6
+
