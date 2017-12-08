@@ -1,22 +1,45 @@
-From 859e9c963ba2f379054a3b5a5c8afc0f5d6f98f0 Mon Sep 17 00:00:00 2001
-Message-Id: <cover.1512665948.git.dongsu@kinvolk.io>
+From 788bb29dd94784499c14de2a78441aeb0b65b61d Mon Sep 17 00:00:00 2001
+Message-Id: <cover.1512741134.git.dongsu@kinvolk.io>
 From: Dongsu Park <dongsu@kinvolk.io>
-Date: Thu, 7 Dec 2017 17:59:08 +0100
-Subject: [PATCH 00/12] non-init user namespace for FUSE
+Date: Fri, 8 Dec 2017 14:52:14 +0100
+Subject: [PATCH 00/12] non-init user namespaces for FUSE
 
-*** TBD ***
+At the moment, filesystems backed by physical medium can only be mounted
+by the real root in the initial user namespaces. This restriction exists
+because if it's allowed for root user in non-init user namespaces to
+mount the filesystem, then it effectively allows the user to control the
+underlying source of the filesystem. In case of FUSE, the source would
+mean any underlying device.
 
-Alban Crequy (1):
-  capabilities: Allow privileged user in s_user_ns to set security.* xattrs
+However, in many use cases such as containers, it's necessary to allow
+filesystems to be mounted from non-init user namespaces. Goal of this
+patchset is to allow FUSE filesystem to be mounted from non-init user
+namespaces. Supporting for other filesystems like ext4 are not in the
+scope of this patchset.
+
+Patches 1-2 deal with an additional flag of lookup_bdev() to check for
+additional inode permission.
+
+Patches 3-7 allow superblock owner to change ownership of inodes, and
+deal with additional capability checks w.r.t user namespaces.
+
+Patches 8-10 allow FUSE filesystems to be mounted outside of the init
+user namespace.
+
+Patch 11 handles a corner case of non-root users in EVM.
+
+Patch 12 disallows unprivileged mount when device is open for writing.
+
 
 Eric W. Biederman (1):
   fs: Allow superblock owner to change ownership of inodes
 
-Seth Forshee (10):
+Seth Forshee (11):
   block_dev: Support checking inode permissions in lookup_bdev()
   mtd: Check permissions towards mtd block device inode when mounting
   fs: Don't remove suid for CAP_FSETID for userns root
   fs: Allow superblock owner to access do_remount_sb()
+  capabilities: Allow privileged user in s_user_ns to set security.* xattrs
   fs: Allow CAP_SYS_ADMIN in s_user_ns to freeze and thaw filesystems
   fuse: Support fuse filesystems outside of init_user_ns
   fuse: Restrict allow_other to the superblock's namespace or a descendant
