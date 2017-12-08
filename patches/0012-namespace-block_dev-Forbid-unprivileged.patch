@@ -22,6 +22,9 @@ results in mount_bdev returning -EBUSY, otherwise i_writecount
 is decremented. Opens by root and mounts from init_user_ns do not
 check nor modify i_writecount.
 
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 ---
  fs/block_dev.c | 17 +++++++++++++++++

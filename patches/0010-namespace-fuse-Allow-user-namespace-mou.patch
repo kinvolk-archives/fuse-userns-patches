@@ -6,6 +6,8 @@ From: Seth Forshee <seth.forshee@canonical.com>
 Date: Thu, 2 Oct 2014 15:51:41 -0500
 Subject: [PATCH 10/12] fuse: Allow user namespace mounts
 
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 Acked-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 ---

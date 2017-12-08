@@ -17,6 +17,9 @@ userns used at mount or a descendant of that namespace. Also
 export current_in_userns() for use by fuse when built as a
 module.
 
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
 Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
 Acked-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>

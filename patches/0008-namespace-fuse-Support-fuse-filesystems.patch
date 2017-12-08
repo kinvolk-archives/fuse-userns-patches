@@ -24,6 +24,9 @@ Either restriction could be relaxed in the future if needed.
 For cuse the namespace used for the connection is also simply
 current_user_ns() at the time /dev/cuse is opened.
 
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 ---
  fs/fuse/cuse.c   |  3 ++-

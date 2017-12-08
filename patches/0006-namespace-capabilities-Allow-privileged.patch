@@ -23,6 +23,9 @@ unprivileged userns mounts, and Smack will deny the writes for
 any user without global CAP_MAC_ADMIN, so loosening the
 capability check in commoncap is safe in this respect as well.
 
+Cc: linux-security-module@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: James Morris <james.l.morris@oracle.com>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
 ---

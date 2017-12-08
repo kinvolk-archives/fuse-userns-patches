@@ -11,6 +11,9 @@ CAP_FSETID in s_user_ns rather than init_user_ns.
 
 --EWB Changed from ns_capable(sb->s_user_ns, ) to capable_wrt_inode_uidgid
 
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
 ---
