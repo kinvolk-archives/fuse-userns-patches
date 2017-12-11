@@ -23,6 +23,7 @@ $ git send-email \
   --thread \
   --from="Dongsu Park <dongsu@kinvolk.io>" \
   --to=linux-kernel@vger.kernel.org \
+  --cc=containers@lists.linux-foundation.org \
   --cc="Alban Crequy <alban@kinvolk.io>" \
   --cc="Dongsu Park <dongsu@kinvolk.io>" \
   --cc="Eric W. Biederman <ebiederm@xmission.com>" \
