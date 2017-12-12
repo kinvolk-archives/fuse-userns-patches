@@ -17,6 +17,48 @@ patchset is to allow FUSE filesystem to be mounted from non-init user
 namespaces. Supporting for other filesystems like ext4 are not in the
 scope of this patchset.
 
+Let me describe how to test mounting from non-init namespace. It's
+assume that tests are done via sshfs, a userspace filesystem based on
+FUSE for ssh as backend. Testing system is Fedora 27.
+
+====
+$ sudo dnf install -y sshfs
+$ sudo mkdir -p /mnt/userns
+
+### workaround to get the sshfs permission checks
+$ sudo chown -R $UID:$UID /etc/ssh/ssh_config.d /usr/share/crypto-policies
+
+$ unshare -U -r -m
+# sshfs root@localhost: /mnt/userns
+
+### You can see sshfs being mounted from non-init user namespace
+# mount | grep sshfs
+root@localhost: on /mnt/userns type fuse.sshfs
+(rw,nosuid,nodev,relatime,user_id=0,group_id=0)
+
+# touch /mnt/userns/test
+# ls -l /mnt/userns/test
+-rw-r--r-- 1 root root 0 Dec 11 19:01 /mnt/userns/test
+====
+
+Open another terminal, check the mountpoint from outside the namespace.
+
+====
+$ grep userns /proc/$(pidof sshfs)/mountinfo
+131 102 0:35 / /mnt/userns rw,nosuid,nodev,relatime - fuse.sshfs
+root@localhost: rw,user_id=0,group_id=0
+====
+
+After all tests are done, you can unmount the filesystem,
+inside the namespace.
+
+====
+# fusermount -u /mnt/userns
+====
+
+This patchset is based on work by Seth Forshee and Eric Biederman.
+https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1132206.html
+
 Patches 1-2 deal with an additional flag of lookup_bdev() to check for
 additional inode permission.
 
