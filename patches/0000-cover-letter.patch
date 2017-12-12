@@ -65,6 +65,10 @@ Changes since v4:
  * Added and changed commit messages
  * Describe about how to test non-init user namespaces
 
+TODO:
+ * Deal with non-init userns cases in ima_read_xattr()
+ * Test IMA/LSMs
+
 Patches 1-2 deal with an additional flag of lookup_bdev() to check for
 additional inode permission.
 
