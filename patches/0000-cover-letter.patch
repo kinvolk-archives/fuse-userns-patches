@@ -4,6 +4,10 @@ From: Dongsu Park <dongsu@kinvolk.io>
 Date: Fri, 8 Dec 2017 14:52:14 +0100
 Subject: [PATCH v5 00/12] non-init user namespaces for FUSE
 
+This patchset v5 is based on work by Seth Forshee and Eric Biederman.
+The latest patchset was v4:
+https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1132206.html
+
 At the moment, filesystems backed by physical medium can only be mounted
 by the real root in the initial user namespaces. This restriction exists
 because if it's allowed for root user in non-init user namespaces to
@@ -56,10 +60,6 @@ inside the namespace.
 # fusermount -u /mnt/userns
 ====
 
-This patchset v5 is based on work by Seth Forshee and Eric Biederman.
-The latest patchset was v4:
-https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1132206.html
-
 Changes since v4:
  * Remove other parts like ext4 to keep the patchset minimal for FUSE
  * Added and changed commit messages
@@ -77,6 +77,9 @@ user namespace.
 Patch 11 handles a corner case of non-root users in EVM.
 
 Patch 12 disallows unprivileged mount when device is open for writing.
+
+The patchset is also available on our github repo:
+  https://github.com/kinvolk/linux/tree/dongsu/fuse-userns-v5-1
 
 
 Eric W. Biederman (1):
