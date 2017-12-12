@@ -63,7 +63,7 @@ inside the namespace.
 Changes since v4:
  * Remove other parts like ext4 to keep the patchset minimal for FUSE
  * Added and changed commit messages
- * Describe about how to test non-init user namespaces
+ * Describe how to test non-init user namespaces
 
 TODO:
  * Deal with non-init userns cases in ima_read_xattr()
@@ -79,8 +79,6 @@ Patches 8-10 allow FUSE filesystems to be mounted outside of the init
 user namespace.
 
 Patch 11 handles a corner case of non-root users in EVM.
-
-Patch 12 disallows unprivileged mount when device is open for writing.
 
 The patchset is also available on our github repo:
   https://github.com/kinvolk/linux/tree/dongsu/fuse-userns-v5-1
