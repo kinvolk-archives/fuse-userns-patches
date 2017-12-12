@@ -6,6 +6,8 @@ From: Seth Forshee <seth.forshee@canonical.com>
 Date: Thu, 26 Jun 2014 11:58:11 -0500
 Subject: [PATCH 08/12] fuse: Support fuse filesystems outside of init_user_ns
 
+From: Seth Forshee <seth.forshee@canonical.com>
+
 In order to support mounts from namespaces other than
 init_user_ns, fuse must translate uids and gids to/from the
 userns of the process servicing requests on /dev/fuse. This

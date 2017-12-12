@@ -4,6 +4,8 @@ From: Seth Forshee <seth.forshee@canonical.com>
 Date: Fri, 31 Jul 2015 12:58:34 -0500
 Subject: [PATCH 01/12] block_dev: Support checking inode permissions in lookup_bdev()
 
+From: Seth Forshee <seth.forshee@canonical.com>
+
 When looking up a block device by path no permission check is
 done to verify that the user has access to the block device inode
 at the specified path. In some cases it may be necessary to

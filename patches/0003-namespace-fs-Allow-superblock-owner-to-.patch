@@ -6,6 +6,8 @@ From: "Eric W. Biederman" <ebiederm@xmission.com>
 Date: Sat, 2 Jul 2016 09:54:25 -0500
 Subject: [PATCH 03/12] fs: Allow superblock owner to change ownership of inodes
 
+From: Eric W. Biederman <ebiederm@xmission.com>
+
 Allow users with CAP_SYS_CHOWN over the superblock of a filesystem to
 chown files.  Ordinarily the capable_wrt_inode_uidgid check is
 sufficient to allow access to files but when the underlying filesystem

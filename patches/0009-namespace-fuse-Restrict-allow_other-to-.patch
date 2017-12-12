@@ -6,6 +6,8 @@ From: Seth Forshee <seth.forshee@canonical.com>
 Date: Thu, 2 Oct 2014 15:34:45 -0500
 Subject: [PATCH 09/12] fuse: Restrict allow_other to the superblock's namespace or a descendant
 
+From: Seth Forshee <seth.forshee@canonical.com>
+
 Unprivileged users are normally restricted from mounting with the
 allow_other option by system policy, but this could be bypassed
 for a mount done with user namespace root permissions. In such

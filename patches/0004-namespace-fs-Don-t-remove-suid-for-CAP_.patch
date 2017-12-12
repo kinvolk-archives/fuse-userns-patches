@@ -6,6 +6,8 @@ From: Seth Forshee <seth.forshee@canonical.com>
 Date: Tue, 26 Apr 2016 14:36:28 -0500
 Subject: [PATCH 04/12] fs: Don't remove suid for CAP_FSETID for userns root
 
+From: Seth Forshee <seth.forshee@canonical.com>
+
 Expand the check in should_remove_suid() to keep privileges for
 CAP_FSETID in s_user_ns rather than init_user_ns.
 

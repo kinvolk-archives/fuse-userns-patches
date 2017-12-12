@@ -6,6 +6,8 @@ From: Seth Forshee <seth.forshee@canonical.com>
 Date: Thu, 15 Dec 2016 11:03:08 -0600
 Subject: [PATCH 11/12] evm: Don't update hmacs in user ns mounts
 
+From: Seth Forshee <seth.forshee@canonical.com>
+
 The kernel should not calculate new hmacs for mounts done by
 non-root users. Update evm_calc_hmac_or_hash() to refuse to
 calculate new hmacs for mounts for non-init user namespaces.

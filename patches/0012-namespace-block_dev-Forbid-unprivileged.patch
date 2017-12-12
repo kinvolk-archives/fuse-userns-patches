@@ -6,6 +6,8 @@ From: Seth Forshee <seth.forshee@canonical.com>
 Date: Mon, 19 Sep 2016 15:46:26 -0500
 Subject: [PATCH 12/12] block_dev: Forbid unprivileged mounting when device is opened for writing
 
+From: Seth Forshee <seth.forshee@canonical.com>
+
 For unprivileged mounts to be safe the user must not be able to
 make changes to the backing store while it is mounted. This patch
 takes a step towards preventing this by refusing to mount in a

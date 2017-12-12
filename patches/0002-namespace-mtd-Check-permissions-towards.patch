@@ -6,6 +6,8 @@ From: Seth Forshee <seth.forshee@canonical.com>
 Date: Wed, 7 Oct 2015 14:53:33 -0500
 Subject: [PATCH 02/12] mtd: Check permissions towards mtd block device inode when mounting
 
+From: Seth Forshee <seth.forshee@canonical.com>
+
 Unprivileged users should not be able to mount mtd block devices
 when they lack sufficient privileges towards the block device
 inode.  Update mount_mtd() to validate that the user has the

@@ -6,6 +6,8 @@ From: Seth Forshee <seth.forshee@canonical.com>
 Date: Sun, 15 Feb 2015 14:35:35 -0600
 Subject: [PATCH 07/12] fs: Allow CAP_SYS_ADMIN in s_user_ns to freeze and thaw filesystems
 
+From: Seth Forshee <seth.forshee@canonical.com>
+
 The user in control of a super block should be allowed to freeze
 and thaw it. Relax the restrictions on the FIFREEZE and FITHAW
 ioctls to require CAP_SYS_ADMIN in s_user_ns.

@@ -6,6 +6,8 @@ From: Seth Forshee <seth.forshee@canonical.com>
 Date: Tue, 28 Nov 2017 18:13:45 +0100
 Subject: [PATCH 06/12] capabilities: Allow privileged user in s_user_ns to set security.* xattrs
 
+From: Seth Forshee <seth.forshee@canonical.com>
+
 A privileged user in s_user_ns will generally have the ability to
 manipulate the backing store and insert security.* xattrs into
 the filesystem directly. Therefore the kernel must be prepared to

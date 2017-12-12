@@ -6,6 +6,8 @@ From: Seth Forshee <seth.forshee@canonical.com>
 Date: Tue, 26 Apr 2016 14:36:29 -0500
 Subject: [PATCH 05/12] fs: Allow superblock owner to access do_remount_sb()
 
+From: Seth Forshee <seth.forshee@canonical.com>
+
 Superblock level remounts are currently restricted to global
 CAP_SYS_ADMIN, as is the path for changing the root mount to
 read only on umount. Loosen both of these permission checks to
