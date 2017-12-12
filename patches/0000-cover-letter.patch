@@ -2,7 +2,7 @@ From 788bb29dd94784499c14de2a78441aeb0b65b61d Mon Sep 17 00:00:00 2001
 Message-Id: <cover.1512741134.git.dongsu@kinvolk.io>
 From: Dongsu Park <dongsu@kinvolk.io>
 Date: Fri, 8 Dec 2017 14:52:14 +0100
-Subject: [PATCH 00/12] non-init user namespaces for FUSE
+Subject: [PATCH v5 00/12] non-init user namespaces for FUSE
 
 At the moment, filesystems backed by physical medium can only be mounted
 by the real root in the initial user namespaces. This restriction exists
@@ -56,8 +56,14 @@ inside the namespace.
 # fusermount -u /mnt/userns
 ====
 
-This patchset is based on work by Seth Forshee and Eric Biederman.
+This patchset v5 is based on work by Seth Forshee and Eric Biederman.
+The latest patchset was v4:
 https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1132206.html
+
+Changes since v4:
+ * Remove other parts like ext4 to keep the patchset minimal for FUSE
+ * Added and changed commit messages
+ * Describe about how to test non-init user namespaces
 
 Patches 1-2 deal with an additional flag of lookup_bdev() to check for
 additional inode permission.
