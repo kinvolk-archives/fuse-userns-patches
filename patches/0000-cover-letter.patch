@@ -85,24 +85,25 @@ The patchset is also available on our github repo:
 Eric W. Biederman (1):
   fs: Allow superblock owner to change ownership of inodes
 
-Seth Forshee (11):
+Seth Forshee (10):
   block_dev: Support checking inode permissions in lookup_bdev()
   mtd: Check permissions towards mtd block device inode when mounting
   fs: Don't remove suid for CAP_FSETID for userns root
   fs: Allow superblock owner to access do_remount_sb()
-  capabilities: Allow privileged user in s_user_ns to set security.* xattrs
+  capabilities: Allow privileged user in s_user_ns to set security.*
+    xattrs
   fs: Allow CAP_SYS_ADMIN in s_user_ns to freeze and thaw filesystems
   fuse: Support fuse filesystems outside of init_user_ns
-  fuse: Restrict allow_other to the superblock's namespace or a descendant
+  fuse: Restrict allow_other to the superblock's namespace or a
+    descendant
   fuse: Allow user namespace mounts
   evm: Don't update hmacs in user ns mounts
-  block_dev: Forbid unprivileged mounting when device is opened for writing
 
  drivers/md/bcache/super.c           |  2 +-
  drivers/md/dm-table.c               |  2 +-
  drivers/mtd/mtdsuper.c              |  6 +++++-
  fs/attr.c                           | 34 ++++++++++++++++++++++++++--------
- fs/block_dev.c                      | 30 +++++++++++++++++++++++++++---
+ fs/block_dev.c                      | 13 ++++++++++---
  fs/fuse/cuse.c                      |  3 ++-
  fs/fuse/dev.c                       | 11 ++++++++---
  fs/fuse/dir.c                       | 16 ++++++++--------
@@ -115,12 +116,11 @@ Seth Forshee (11):
  fs/proc/generic.c                   |  7 +++++++
  fs/proc/proc_sysctl.c               |  7 +++++++
  fs/quota/quota.c                    |  2 +-
- fs/super.c                          | 32 ++++++++++++++++++++++++++++++--
  include/linux/fs.h                  |  2 +-
  kernel/user_namespace.c             |  1 +
  security/commoncap.c                |  8 ++++++--
  security/integrity/evm/evm_crypto.c |  3 ++-
- 22 files changed, 174 insertions(+), 54 deletions(-)
+ 21 files changed, 127 insertions(+), 52 deletions(-)
 
 -- 
 2.13.6
