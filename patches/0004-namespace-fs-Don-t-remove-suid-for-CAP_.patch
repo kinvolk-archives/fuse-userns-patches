@@ -18,6 +18,7 @@ Cc: linux-kernel@vger.kernel.org
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
 ---
  fs/inode.c | 6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)

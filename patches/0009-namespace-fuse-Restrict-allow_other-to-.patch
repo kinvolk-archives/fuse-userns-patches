@@ -25,6 +25,7 @@ Cc: "Eric W. Biederman" <ebiederm@xmission.com>
 Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
 Acked-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
 ---
  fs/fuse/dir.c           | 2 +-
  kernel/user_namespace.c | 1 +

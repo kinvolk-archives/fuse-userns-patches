@@ -28,6 +28,7 @@ Cc: linux-fsdevel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
 ---
  fs/block_dev.c | 17 +++++++++++++++++
  fs/super.c     | 32 ++++++++++++++++++++++++++++++--

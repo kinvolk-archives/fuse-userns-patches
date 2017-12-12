@@ -16,6 +16,7 @@ Cc: linux-fsdevel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
 ---
  fs/ioctl.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)

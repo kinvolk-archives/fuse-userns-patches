@@ -31,6 +31,7 @@ Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 Cc: Jan Kara <jack@suse.com>
 Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
 ---
  drivers/md/bcache/super.c |  2 +-
  drivers/md/dm-table.c     |  2 +-

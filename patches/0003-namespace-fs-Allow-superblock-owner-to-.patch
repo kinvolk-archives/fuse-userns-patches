@@ -45,6 +45,7 @@ Cc: Kees Cook <keescook@chromium.org>
 Inspired-by: Seth Forshee <seth.forshee@canonical.com>
 Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
 [saf: Resolve conflicts caused by s/inode_change_ok/setattr_prepare/]
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
 ---
  fs/attr.c             | 34 ++++++++++++++++++++++++++--------
  fs/proc/base.c        |  7 +++++++

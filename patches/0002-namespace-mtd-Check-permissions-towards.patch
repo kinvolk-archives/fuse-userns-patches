@@ -18,6 +18,7 @@ continue working as before.
 Cc: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
 ---
  drivers/mtd/mtdsuper.c | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)

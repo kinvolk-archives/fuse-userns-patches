@@ -19,6 +19,7 @@ Cc: James Morris <james.l.morris@oracle.com>
 Cc: Mimi Zohar <zohar@linux.vnet.ibm.com>
 Cc: "Serge E. Hallyn" <serge@hallyn.com>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
 ---
  security/integrity/evm/evm_crypto.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)

@@ -20,6 +20,7 @@ Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
 Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
 ---
  fs/namespace.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
