@@ -11,6 +11,8 @@ From: Seth Forshee <seth.forshee@canonical.com>
 To be able to mount fuse from non-init user namespaces, it's necessary
 to set FS_USERNS_MOUNT flag to fs_flags.
 
+Patch v4 is available: https://patchwork.kernel.org/patch/8944681/
+
 Cc: linux-fsdevel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Acked-by: Miklos Szeredi <mszeredi@redhat.com>

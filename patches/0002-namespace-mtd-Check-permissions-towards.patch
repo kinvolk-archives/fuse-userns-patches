@@ -15,6 +15,8 @@ required access to the inode at the specified path. The check
 will be skipped for CAP_SYS_ADMIN, so privileged mounts will
 continue working as before.
 
+Patch v3 is available: https://patchwork.kernel.org/patch/7640011/
+
 Cc: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>

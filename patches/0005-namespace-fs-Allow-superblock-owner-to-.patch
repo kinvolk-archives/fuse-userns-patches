@@ -14,6 +14,8 @@ read only on umount. Loosen both of these permission checks to
 also allow CAP_SYS_ADMIN in any namespace which is privileged
 towards the userns which originally mounted the filesystem.
 
+Patch v4 is available: https://patchwork.kernel.org/patch/8944631/
+
 Cc: linux-fsdevel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>

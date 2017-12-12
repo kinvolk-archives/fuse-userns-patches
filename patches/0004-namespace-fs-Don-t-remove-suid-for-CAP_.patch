@@ -11,6 +11,8 @@ From: Seth Forshee <seth.forshee@canonical.com>
 Expand the check in should_remove_suid() to keep privileges for
 CAP_FSETID in s_user_ns rather than init_user_ns.
 
+Patch v4 is available: https://patchwork.kernel.org/patch/8944621/
+
 --EWB Changed from ns_capable(sb->s_user_ns, ) to capable_wrt_inode_uidgid
 
 Cc: linux-fsdevel@vger.kernel.org

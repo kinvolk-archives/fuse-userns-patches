@@ -19,6 +19,8 @@ userns used at mount or a descendant of that namespace. Also
 export current_in_userns() for use by fuse when built as a
 module.
 
+Patch v4 is available: https://patchwork.kernel.org/patch/8944671/
+
 Cc: linux-fsdevel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Cc: "Eric W. Biederman" <ebiederm@xmission.com>
