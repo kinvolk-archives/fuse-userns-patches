@@ -15,7 +15,7 @@ Patch v4 is available: https://patchwork.kernel.org/patch/8944681/
 
 Cc: linux-fsdevel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
-Acked-by: Miklos Szeredi <mszeredi@redhat.com>
+Cc: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 [dongsu: add a simple commit messasge]
 Signed-off-by: Dongsu Park <dongsu@kinvolk.io>

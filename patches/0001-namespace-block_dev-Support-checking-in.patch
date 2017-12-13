@@ -31,7 +31,7 @@ Cc: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 Cc: Jan Kara <jack@suse.com>
-Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
+Cc: Serge Hallyn <serge@hallyn.com>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
 ---

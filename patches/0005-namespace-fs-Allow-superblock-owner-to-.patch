@@ -19,9 +19,9 @@ Patch v4 is available: https://patchwork.kernel.org/patch/8944631/
 Cc: linux-fsdevel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Serge Hallyn <serge@hallyn.com>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
-Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
 Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
 ---
  fs/namespace.c | 4 ++--

@@ -24,8 +24,8 @@ Patch v4 is available: https://patchwork.kernel.org/patch/8944671/
 Cc: linux-fsdevel@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-Acked-by: Serge Hallyn <serge.hallyn@canonical.com>
-Acked-by: Miklos Szeredi <mszeredi@redhat.com>
+Cc: Serge Hallyn <serge@hallyn.com>
+Cc: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
 ---
