@@ -9,7 +9,7 @@ The latest patchset was v4:
 https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1132206.html
 
 At the moment, filesystems backed by physical medium can only be mounted
-by the real root in the initial user namespaces. This restriction exists
+by real root in the initial user namespace. This restriction exists
 because if it's allowed for root user in non-init user namespaces to
 mount the filesystem, then it effectively allows the user to control the
 underlying source of the filesystem. In case of FUSE, the source would
@@ -17,13 +17,13 @@ mean any underlying device.
 
 However, in many use cases such as containers, it's necessary to allow
 filesystems to be mounted from non-init user namespaces. Goal of this
-patchset is to allow FUSE filesystem to be mounted from non-init user
-namespaces. Supporting for other filesystems like ext4 are not in the
+patchset is to allow FUSE filesystems to be mounted from non-init user
+namespaces. Support for other filesystems like ext4 are not in the
 scope of this patchset.
 
-Let me describe how to test mounting from non-init namespace. It's
-assume that tests are done via sshfs, a userspace filesystem based on
-FUSE for ssh as backend. Testing system is Fedora 27.
+Let me describe how to test mounting from non-init user namespaces. It's
+assumed that tests are done via sshfs, a userspace filesystem based on
+FUSE with ssh as backend. Testing system is Fedora 27.
 
 ====
 $ sudo dnf install -y sshfs
@@ -35,7 +35,7 @@ $ sudo chown -R $UID:$UID /etc/ssh/ssh_config.d /usr/share/crypto-policies
 $ unshare -U -r -m
 # sshfs root@localhost: /mnt/userns
 
-### You can see sshfs being mounted from non-init user namespace
+### You can see sshfs being mounted from a non-init user namespace
 # mount | grep sshfs
 root@localhost: on /mnt/userns type fuse.sshfs
 (rw,nosuid,nodev,relatime,user_id=0,group_id=0)
@@ -53,7 +53,7 @@ $ grep userns /proc/$(pidof sshfs)/mountinfo
 root@localhost: rw,user_id=0,group_id=0
 ====
 
-After all tests are done, you can unmount the filesystem,
+After all tests are done, you can unmount the filesystem
 inside the namespace.
 
 ====
@@ -62,7 +62,7 @@ inside the namespace.
 
 Changes since v4:
  * Remove other parts like ext4 to keep the patchset minimal for FUSE
- * Added and changed commit messages
+ * Add and change commit messages
  * Describe how to test non-init user namespaces
 
 TODO:
@@ -72,7 +72,7 @@ TODO:
 Patches 1-2 deal with an additional flag of lookup_bdev() to check for
 additional inode permission.
 
-Patches 3-7 allow superblock owner to change ownership of inodes, and
+Patches 3-7 allow the superblock owner to change ownership of inodes, and
 deal with additional capability checks w.r.t user namespaces.
 
 Patches 8-10 allow FUSE filesystems to be mounted outside of the init
@@ -80,7 +80,7 @@ user namespace.
 
 Patch 11 handles a corner case of non-root users in EVM.
 
-The patchset is also available on our github repo:
+The patchset is also available in our github repo:
   https://github.com/kinvolk/linux/tree/dongsu/fuse-userns-v5-1
 
 
