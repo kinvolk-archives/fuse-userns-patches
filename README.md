@@ -28,9 +28,7 @@ $ git send-email \
   --cc="Dongsu Park <dongsu@kinvolk.io>" \
   --cc="Eric W. Biederman <ebiederm@xmission.com>" \
   --cc="Miklos Szeredi <mszeredi@redhat.com>" \
-  --cc="Sargun Dhillon <sargun@sargun.me>" \
   --cc="Seth Forshee <seth.forshee@canonical.com>" \
-  --cc="Fabio Kung <fabio.kung@gmail.com>" \
   --bcc="Dongsu Park <dongsu@kinvolk.io>" \
   patches/00*.patch
 ```
