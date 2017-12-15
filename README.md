@@ -39,11 +39,11 @@ Cover letter is available: [./patches/0000-cover-letter.patch](./patches/0000-co
 
 ### How to generate a cover letter
 
-Assuming that there are 12 patches on top of the upstream master,
+Assuming that there are 11 patches on top of the upstream master,
 (e.g. v4.15-rc1), generate patches from the kernel git repo:
 
 ```
-$ git format-patch -12 --cover-letter
+$ git format-patch -11 --cover-letter
 ```
 
 Then the cover letter `0000-cover-letter.patch` will be generated.

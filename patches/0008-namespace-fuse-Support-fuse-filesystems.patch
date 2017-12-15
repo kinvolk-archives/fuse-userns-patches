@@ -4,7 +4,7 @@ In-Reply-To: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kin
 References: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
 From: Seth Forshee <seth.forshee@canonical.com>
 Date: Thu, 26 Jun 2014 11:58:11 -0500
-Subject: [PATCH 08/12] fuse: Support fuse filesystems outside of init_user_ns
+Subject: [PATCH 08/11] fuse: Support fuse filesystems outside of init_user_ns
 
 From: Seth Forshee <seth.forshee@canonical.com>
 

@@ -4,7 +4,7 @@ In-Reply-To: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kin
 References: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
 From: Seth Forshee <seth.forshee@canonical.com>
 Date: Thu, 15 Dec 2016 11:03:08 -0600
-Subject: [PATCH 11/12] evm: Don't update hmacs in user ns mounts
+Subject: [PATCH 11/11] evm: Don't update hmacs in user ns mounts
 
 From: Seth Forshee <seth.forshee@canonical.com>
 

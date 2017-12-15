@@ -4,7 +4,7 @@ In-Reply-To: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kin
 References: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
 From: Seth Forshee <seth.forshee@canonical.com>
 Date: Sun, 15 Feb 2015 14:35:35 -0600
-Subject: [PATCH 07/12] fs: Allow CAP_SYS_ADMIN in s_user_ns to freeze and thaw filesystems
+Subject: [PATCH 07/11] fs: Allow CAP_SYS_ADMIN in s_user_ns to freeze and thaw filesystems
 
 From: Seth Forshee <seth.forshee@canonical.com>
 
