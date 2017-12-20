@@ -89,15 +89,24 @@ Now it should show its `security.ima` value.
 
 ### (optional) Testing the force option for the IMA policy
 
+Build the kernel from our custom branch:
+https://github.com/kinvolk/linux/tree/dongsu/fuse-userns-v5-2
+This branch consists of experimental patches like `"ima: define a new policy
+option named force"` as well as other dependencies. (NOTE: when the mainline
+kernel merged the integrity-next tree in the future, this branch might need
+to be updated too.)
+
 Please make sure that the kernel is compiled with
-`CONFIG_IMA_APPRAISE_SIGNED_INIT=y`.
+`CONFIG_IMA_APPRAISE_SIGNED_INIT=y`. Without this option, kernel cannot
+accept the force option at all.
 
 ```
 mkdir --parent /etc/ima
 cat /sys/kernel/security/ima/policy > /etc/ima/ima-policy
 ```
 
-Update the local policy file as you want, for example:
+Update the local policy file as you want, to enable the `force` option,
+for example:
 
 ```
 echo "measure force" >> /etc/ima/ima-policy
@@ -117,4 +126,7 @@ reading the sysfs file again.
 cat /sys/kernel/security/ima/policy
 
 ```
+
+If systemd with IMA feature is running on your system, then the local IMA
+policy will be automatically loaded during the next boots.
 
