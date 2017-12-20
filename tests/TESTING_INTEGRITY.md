@@ -29,7 +29,7 @@ Actually `tcb` is recommended.
 Optionally, you might need to remount rootfs with `iversion`. (not `i_version`)
 
 ```
-sudo mount -o remount,rw,iversion /
+# mount -o remount,rw,iversion /
 ```
 
 ### Look into securityfs
@@ -37,9 +37,9 @@ sudo mount -o remount,rw,iversion /
 Look into IMA data under sysfs.
 
 ```
-(Optional) mount -t securityfs securityfs /sys/kernel/security
-ls -l /sys/kernel/security/ima
-cat /sys/kernel/security/ima/ascii_runtime_measurements
+### (Optional) mount -t securityfs securityfs /sys/kernel/security
+$ ls -l /sys/kernel/security/ima
+$ sudo cat /sys/kernel/security/ima/ascii_runtime_measurements
 ```
 
 Then you can see integrity data such as hash for each file, which has been
@@ -47,9 +47,9 @@ executed by the root user. Try to copy a file to FUSE-mounted filesystem,
 and run it from there.
 
 ```
-cp /bin/bash /mnt/memfs/bash2
-/mnt/memfs/bash2 -c "echo hello"
-grep bash2 /sys/kernel/security/ima/ascii_runtime_measurements
+$ cp /bin/bash /mnt/memfs/bash2
+$ /mnt/memfs/bash2 -c "echo hello"
+$ grep bash2 /sys/kernel/security/ima/ascii_runtime_measurements
 ```
 
 ### Test with memfs
@@ -57,14 +57,14 @@ grep bash2 /sys/kernel/security/ima/ascii_runtime_measurements
 We patched memfs to be able to test xattr `security.ima`.
 
 ```
-git clone https://github.com/kinvolk/memfs
-cd memfs
-git checkout alban/faking_xattr
-go build -o $GOPATH/bin/memfs github.com/bbengfort/memfs/cmd
-sudo mkdir -p /mnt/memfs
-sudo memfs /mnt/memfs
-touch /mnt/memfs/INJECT_XATTR_security.ima=HelloEveryone
-getfattr -n security.ima /mnt/memfs/INJECT_XATTR_security.ima=Hello
+$ git clone https://github.com/kinvolk/memfs
+$ cd memfs
+$ git checkout alban/faking_xattr
+$ go build -o $GOPATH/bin/memfs github.com/bbengfort/memfs/cmd
+$ sudo mkdir -p /mnt/memfs
+$ sudo ~/go/bin/memfs /mnt/memfs
+$ touch /mnt/memfs/INJECT_XATTR_security.ima=HelloEveryone
+$ getfattr -n security.ima /mnt/memfs/INJECT_XATTR_security.ima=Hello
 Result: security.ima="HelloEveryone"
 ```
 
@@ -73,7 +73,7 @@ Result: security.ima="HelloEveryone"
 Make sure that rootfs is mounted with `iversion` option. Run:
 
 ```
-getfattr -m ^security --dump -e hex /bin/bzcat
+$ getfattr -m ^security --dump -e hex /bin/bzcat
 ```
 
 In the beginning, it will not show its `security.ima` xattr value.
@@ -81,8 +81,8 @@ That's because the xattr value is measured only after the file
 was once executed. So run the file like this:
 
 ```
-bzcat -h &> /dev/null
-getfattr -m ^security --dump -e hex /bin/bzcat
+$ bzcat -h &> /dev/null
+$ getfattr -m ^security --dump -e hex /bin/bzcat
 ```
 
 Now it should show its `security.ima` value.
@@ -101,21 +101,21 @@ Please make sure that the kernel is compiled with
 accept the force option at all.
 
 ```
-mkdir --parent /etc/ima
-cat /sys/kernel/security/ima/policy > /etc/ima/ima-policy
+$ mkdir --parent /etc/ima
+$ sudo cat /sys/kernel/security/ima/policy > /etc/ima/ima-policy
 ```
 
 Update the local policy file as you want, to enable the `force` option,
 for example:
 
 ```
-echo "measure force" >> /etc/ima/ima-policy
+$ echo "measure force" >> /etc/ima/ima-policy
 ```
 
 Make the kernel load the new policy file.
 
 ```
-echo "/etc/ima/ima-policy" > /sys/kernel/security/ima/policy
+$ echo "/etc/ima/ima-policy" > /sys/kernel/security/ima/policy
 ```
 
 Doing this, the kernel should be able to load policies listed in
@@ -123,7 +123,7 @@ Doing this, the kernel should be able to load policies listed in
 reading the sysfs file again.
 
 ```
-cat /sys/kernel/security/ima/policy
+$ sudo cat /sys/kernel/security/ima/policy
 
 ```
 
