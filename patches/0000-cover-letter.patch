@@ -66,8 +66,9 @@ Changes since v4:
  * Describe how to test non-init user namespaces
 
 TODO:
- * Deal with non-init userns cases in ima_read_xattr()
- * Test IMA/LSMs
+ * Think through potential security implications
+ * Test IMA/LSMs. Details are written in
+  https://github.com/kinvolk/fuse-userns-patches/blob/master/tests/TESTING_INTEGRITY.md
 
 Patches 1-2 deal with an additional flag of lookup_bdev() to check for
 additional inode permission.
