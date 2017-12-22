@@ -2,8 +2,12 @@
 
 This document describes how to test IMA (Integrity Measurement Architecture).
 Although the patchset for FUSE user namespaces is not exactly related to IMA,
-its change could cause side effects w.r.t security and integrity. Therefore
-we need to test IMA.
+its change could cause side effects w.r.t security and integrity. There are
+a couple of solutions suggested for addressing potential security issues.
+For example, adding a `force` option to IMA, as well as making FUSE discard
+cached results.
+
+That's why we need to test IMA.
 
 
 ## How to test IMA
@@ -23,8 +27,11 @@ ima_policy=tcb ima_appraise_tcb ima_appraise=fix rootflags=i_version evm=fix
 
 and reboot the kernel.
 
-FYI, as for `ima_policy`, you can choose either `tcb`, `appraise_tcb`, or `secure_boot`.
+As for `ima_policy`, you can choose either `tcb`, `appraise_tcb`, or `secure_boot`.
 Actually `tcb` is recommended.
+
+Note that instead of `ima_policy=tcb`, you can also set `ima_tcb`, which is
+though a deprecated option.
 
 Optionally, you might need to remount rootfs with `iversion`. (not `i_version`)
 
@@ -37,24 +44,58 @@ Optionally, you might need to remount rootfs with `iversion`. (not `i_version`)
 Look into IMA data under sysfs.
 
 ```
-### (Optional) mount -t securityfs securityfs /sys/kernel/security
+### (optional) mount -t securityfs securityfs /sys/kernel/security
 $ ls -l /sys/kernel/security/ima
 $ sudo cat /sys/kernel/security/ima/ascii_runtime_measurements
 ```
 
 Then you can see integrity data such as hash for each file, which has been
-executed by the root user. Try to copy a file to FUSE-mounted filesystem,
+executed by the root user. Try to copy a file to a filesystem,
 and run it from there.
 
 ```
-$ cp /bin/bash /mnt/memfs/bash2
-$ /mnt/memfs/bash2 -c "echo hello"
-$ grep bash2 /sys/kernel/security/ima/ascii_runtime_measurements
+$ cp /bin/ls /bin/ls2
+$ /bin/ls2 -c "echo hello"
+$ grep ls2 /sys/kernel/security/ima/ascii_runtime_measurements
 ```
 
-### Test with memfs
+### Remeasuring hashes automatically
 
-We patched memfs to be able to test xattr `security.ima`.
+This section explains a test based on rootfs with ext4 filesystem.
+Make sure that rootfs is mounted with `i_version` option.
+
+
+```
+$ mount -t ext4
+/dev/sda1 on / type ext4 (rw,relatime,i_version,data=ordered)
+```
+
+Try running any executable under the rootfs, e.g.:
+
+```
+$ cp /bin/ls /bin/ls2
+$ getfattr -m ^security --dump -e hex /bin/ls2
+```
+
+In the beginning, it will not show its correct `security.ima` xattr value.
+That's because the xattr value is measured only after the file was once
+executed. So run the executable file, e.g `/bin/ls2 -h`, or simply get the
+hash recalculated like this:
+
+```
+$ evmctl ima_hash /bin/ls2
+$ getfattr -m ^security --dump -e hex /bin/ls2
+```
+
+Now it should show its correct `security.ima` value.
+
+### (optional) Testing with memfs
+
+We patched [memfs](https://github.com/bbengfort/memfs) to be able to test
+xattr `security.ima`, by setting an arbitrary key/value pair. (This might
+not be a generic way to test IMA) Note that since memfs/fuse does not
+support the `i_version` mount option, the automatic hash update method as
+used in ext4 will not be available for memfs.
 
 ```
 $ git clone https://github.com/kinvolk/memfs
@@ -68,37 +109,19 @@ $ getfattr -n security.ima /mnt/memfs/INJECT_XATTR_security.ima=Hello
 Result: security.ima="HelloEveryone"
 ```
 
-### Remeasuring hashes automatically
-
-Make sure that rootfs is mounted with `iversion` option. Run:
-
-```
-$ getfattr -m ^security --dump -e hex /bin/bzcat
-```
-
-In the beginning, it will not show its `security.ima` xattr value.
-That's because the xattr value is measured only after the file
-was once executed. So run the file like this:
-
-```
-$ bzcat -h &> /dev/null
-$ getfattr -m ^security --dump -e hex /bin/bzcat
-```
-
-Now it should show its `security.ima` value.
-
 ### (optional) Testing the force option for the IMA policy
 
 Build the kernel from our custom branch:
 https://github.com/kinvolk/linux/tree/dongsu/fuse-userns-v5-2
-This branch consists of experimental patches like `"ima: define a new policy
-option named force"` as well as other dependencies. (NOTE: when the mainline
-kernel merged the integrity-next tree in the future, this branch might need
-to be updated too.)
+This branch consists of experimental patches like [`ima: define a new policy
+option named force`](https://marc.info/?l=linux-integrity&m=151275680115856&w=2)
+as well as other dependencies. (NOTE: when the mainline kernel merged the
+[next-integrity](https://kernel.googlesource.com/pub/scm/linux/kernel/git/zohar/linux-integrity/+/next-integrity) tree in the future, this branch might need to be updated too.)
 
 Please make sure that the kernel is compiled with
 `CONFIG_IMA_APPRAISE_SIGNED_INIT=y`. Without this option, kernel cannot
-accept the force option at all.
+accept the force option at all. Now store in-kernel policies into a local
+file `/etc/ima/ima-policy`.
 
 ```
 $ mkdir --parent /etc/ima
