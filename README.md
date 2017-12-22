@@ -19,7 +19,7 @@ and all the recipients are correctly set in individual patches as well.
 
 ```
 $ git send-email \
-  --subject="non-init user namespace for FUSE" \
+  --subject="FUSE mounts from non-init user namespaces" \
   --thread \
   --from="Dongsu Park <dongsu@kinvolk.io>" \
   --to=linux-kernel@vger.kernel.org \
