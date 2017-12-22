@@ -1,8 +1,6 @@
 From ddf1fb9b5001e633e0022dee7fecb0ef431e851f Mon Sep 17 00:00:00 2001
 Message-Id: <ddf1fb9b5001e633e0022dee7fecb0ef431e851f.1512041070.git.dongsu@kinvolk.io>
-In-Reply-To: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
-References: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
-From: Seth Forshee <seth.forshee@canonical.com>
+From: Dongsu Park <dongsu@kinvolk.io>
 Date: Tue, 26 Apr 2016 14:36:28 -0500
 Subject: [PATCH 04/11] fs: Don't remove suid for CAP_FSETID for userns root
 

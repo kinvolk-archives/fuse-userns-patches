@@ -1,8 +1,6 @@
 From 8dd484dceb9e96e5b67f21b8a0cf333753985e89 Mon Sep 17 00:00:00 2001
 Message-Id: <8dd484dceb9e96e5b67f21b8a0cf333753985e89.1512041070.git.dongsu@kinvolk.io>
-In-Reply-To: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
-References: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
-From: Seth Forshee <seth.forshee@canonical.com>
+From: Dongsu Park <dongsu@kinvolk.io>
 Date: Tue, 26 Apr 2016 14:36:29 -0500
 Subject: [PATCH 05/11] fs: Allow superblock owner to access do_remount_sb()
 

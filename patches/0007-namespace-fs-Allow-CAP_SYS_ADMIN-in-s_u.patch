@@ -1,8 +1,6 @@
 From 61a37f0b159dd56825696d8d3beb8eaffdf1f72f Mon Sep 17 00:00:00 2001
 Message-Id: <61a37f0b159dd56825696d8d3beb8eaffdf1f72f.1512041070.git.dongsu@kinvolk.io>
-In-Reply-To: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
-References: <ef5e609602df6d7e2b4aa07b92600f04b6851902.1512041070.git.dongsu@kinvolk.io>
-From: Seth Forshee <seth.forshee@canonical.com>
+From: Dongsu Park <dongsu@kinvolk.io>
 Date: Sun, 15 Feb 2015 14:35:35 -0600
 Subject: [PATCH 07/11] fs: Allow CAP_SYS_ADMIN in s_user_ns to freeze and thaw filesystems
 
