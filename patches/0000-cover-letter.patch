@@ -66,9 +66,16 @@ Changes since v4:
  * Describe how to test non-init user namespaces
 
 TODO:
- * Think through potential security implications
+ * Think through potential security implications. There are 2 patches
+   being prepared for security issues. One is "ima: define a new policy
+   option named force" by Mimi Zohar, which adds an option to specify
+   that the results should not be cached:
+   https://marc.info/?l=linux-integrity&m=151275680115856&w=2
+   The other one is to basically prevent FUSE results from being cached,
+   which is still in progress.
+
  * Test IMA/LSMs. Details are written in
-  https://github.com/kinvolk/fuse-userns-patches/blob/master/tests/TESTING_INTEGRITY.md
+   https://github.com/kinvolk/fuse-userns-patches/blob/master/tests/TESTING_INTEGRITY.md
 
 Patches 1-2 deal with an additional flag of lookup_bdev() to check for
 additional inode permission.
