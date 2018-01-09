@@ -54,9 +54,9 @@ executed by the root user. Try to copy a file to a filesystem,
 and run it from there.
 
 ```
-$ cp /bin/ls /bin/ls2
-$ /bin/ls2 -c "echo hello"
-$ grep ls2 /sys/kernel/security/ima/ascii_runtime_measurements
+$ cp /bin/bash /bin/bash2
+$ /bin/bash2 -c "echo hello"
+$ grep bash2 /sys/kernel/security/ima/ascii_runtime_measurements
 ```
 
 ### Remeasuring hashes automatically
@@ -73,18 +73,18 @@ $ mount -t ext4
 Try running any executable under the rootfs, e.g.:
 
 ```
-$ cp /bin/ls /bin/ls2
-$ getfattr -m ^security --dump -e hex /bin/ls2
+$ cp /bin/bash /bin/bash2
+$ getfattr -m ^security --dump -e hex /bin/bash2
 ```
 
 In the beginning, it will not show its correct `security.ima` xattr value.
 That's because the xattr value is measured only after the file was once
-executed. So run the executable file, e.g `/bin/ls2 -h`, or simply get the
+executed. So run the executable file, e.g `/bin/bash2 -h`, or simply get the
 hash recalculated like this:
 
 ```
-$ evmctl ima_hash /bin/ls2
-$ getfattr -m ^security --dump -e hex /bin/ls2
+$ evmctl ima_hash /bin/bash2
+$ getfattr -m ^security --dump -e hex /bin/bash2
 ```
 
 Now it should show its correct `security.ima` value.
