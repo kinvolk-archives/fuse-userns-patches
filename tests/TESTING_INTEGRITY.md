@@ -153,3 +153,25 @@ $ sudo cat /sys/kernel/security/ima/policy
 If systemd with IMA feature is running on your system, then the local IMA
 policy will be automatically loaded during the next boots.
 
+
+## (optional) How to generally test Linux Kernel
+
+One of the standard kernel testing tools is
+[LTP (Linux Test Project)](https://github.com/linux-test-project/ltp),
+which already includes basic testing tools in userspace. It includes tools for
+Linux namespaces as well. We can make use of LTP for running regression tests.
+
+```
+$ git clone https://github.com/linux-test-project/ltp.git
+$ cd ltp
+$ ./configure && make && sudo make install
+$ cd /opt/ltp
+$ sudo ./runltp -f containers
+$ sudo ./runltp -f fs
+```
+
+Then container-/fs-related tests in LTP will run. Let's make sure that all
+tests pass.
+
+NOTE: IMA tests in LTP don't seem to work correctly with recent kernels.
+So it's not expected that `./runltp -f ima` passes in general.
