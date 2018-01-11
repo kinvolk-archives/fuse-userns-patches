@@ -10,6 +10,9 @@ To be able to use FUSE_*SUPER_MAGIC macros in other subsystems like
 security/integrity/ima, we need to move the definitions from fs/fuse
 to include/uapi/linux/.
 
+The FUSE_*SUPER_MAGIC macros are made available to userspace in the
+same way as other filesystems.
+
 Cc: linux-fsdevel@vger.kernel.org
 Cc: linux-integrity@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org

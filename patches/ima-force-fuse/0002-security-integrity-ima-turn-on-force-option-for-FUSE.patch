@@ -4,31 +4,104 @@ In-Reply-To: <cover.1515682581.git.dongsu@kinvolk.io>
 References: <cover.1515682581.git.dongsu@kinvolk.io>
 From: Dongsu Park <dongsu@kinvolk.io>
 Date: Thu, 11 Jan 2018 13:49:26 +0100
-tSubject: [PATCH 2/2] ima: turn on force option for FUSE in builtin policies
+Subject: [PATCH 2/2] ima: turn on force option for FUSE in builtin policies
 
-In case of FUSE filesystem being mounted from non-init user namespace,
-[1] cached integrity results could be used maliciously, when the
-userspace FUSE process has changed the underlying files. To be able to
-avoid such cases, we need to turn on the force option in builtin
-policies, for actions of measure and appraise. Then integrity values
-become re-measured and re-appraised. In that way, it's possible to
-prevent cached integrity results from being used.
+In case of FUSE filesystem, cached integrity results in IMA could be
+reused, when the userspace FUSE process has changed the
+underlying files. To be able to avoid such cases, we need to turn on
+the force option in builtin policies, for actions of measure and
+appraise. Then integrity values become re-measured and re-appraised.
+In that way, cached integrity results won't be used.
 
-This patch depends on the patch "ima: define a new policy option named
-force" by Mimi. [2]  For details on testing the force option, please
-refer to the testing report by Alban. [3]
+This patch depends on the patch "ima: define a new policy option
+named force" by Mimi. [1]
 
-[1] https://www.spinics.net/lists/kernel/msg2683214.html
-[2] https://www.spinics.net/lists/linux-integrity/msg00948.html
-[3] https://marc.info/?l=linux-integrity&m=151559360514676&w=2
+How to test the force option written by Alban:
+
+====
+
+The test I did was using a patched version of the memfs FUSE driver
+[2][3] and two very simple "hello-world" programs [5] (prog1 prints
+"hello world: 1" and prog2 prints "hello world: 2").
+
+I copy prog1 and prog2 in the fuse-memfs mount point, execute them and
+check the sha1 hash in
+"/sys/kernel/security/ima/ascii_runtime_measurements".
+
+My patch on the memfs FUSE driver added a backdoor command to serve
+prog1 when the kernel asks for prog2 or vice-versa. In this way, I can
+exec prog1 and get it to print "hello world: 2" without ever replacing
+the file via the VFS, so the kernel is not aware of the change.
+
+The test was done using the branch "dongsu/fuse-userns-v5-2" [4],
+including both this new force option and Sascha's patch ("ima: Use
+i_version only when filesystem supports it").
+
+
+Step by step test procedure:
+
+1. Mount the memfs FUSE using [3]:
+rm -f  /tmp/memfs-switch* ; memfs -L DEBUG  /mnt/memfs
+
+2. Copy prog1 and prog2 using [5]
+cp prog1 /mnt/memfs/prog1
+cp prog2 /mnt/memfs/prog2
+
+3. Lookup the files and let the FUSE driver to keep the handles open:
+dd if=/mnt/memfs/prog1 bs=1 | (read -n 1 x ; sleep 3600 ) &
+dd if=/mnt/memfs/prog2 bs=1 | (read -n 1 x ; sleep 3600 ) &
+
+4. Check the 2 programs work correctly:
+$ /mnt/memfs/prog1
+hello world: 1
+$ /mnt/memfs/prog2
+hello world: 2
+
+5. Check the measurements for prog1 and prog2:
+$ sudo cat /sys/kernel/security/ima/ascii_runtime_measurements|grep
+/mnt/memfs/prog
+10 7ac5aed52061cb09120e977c6d04ee5c7b11c371 ima-ng
+sha1:ac14c9268cd2811f7a5adea17b27d84f50e1122c /mnt/memfs/prog1
+10 9acc17a9a32aec4a676b8f6558e17a3d6c9a78e6 ima-ng
+sha1:799cb5d1e06d5c37ae7a76ba25ecd1bd01476383 /mnt/memfs/prog2
+
+6. Use the backdoor command in my patched memfs to redirect file
+operations on file handle 3 to file handle 2:
+rm -f  /tmp/memfs-switch* ; touch /tmp/memfs-switch-3-2
+
+7. Check how the FUSE driver serves different content for the files:
+$ /mnt/memfs/prog1
+hello world: 2
+$ /mnt/memfs/prog2
+hello world: 2
+
+8. Check the measurements:
+sudo cat /sys/kernel/security/ima/ascii_runtime_measurements|grep
+/mnt/memfs/prog
+
+Without the patches, on a vanilla kernel, there are no new
+measurements, despite the FUSE driver having served different
+executables.
+
+However, with the "force" option enabled, I can see additional
+measurements for prog1 and prog2 with the hashes reversed when the
+FUSE driver served the alternative content.
+
+====
+
+[1] https://www.spinics.net/lists/linux-integrity/msg00948.html
+[2] https://github.com/bbengfort/memfs
+[3] https://github.com/kinvolk/memfs/commits/alban/switch-files
+[4] https://github.com/kinvolk/linux/commits/dongsu/fuse-userns-v5-2
+[5] https://github.com/kinvolk/fuse-userns-patches/commit/cf1f5750cab0
 
 Cc: linux-integrity@vger.kernel.org
 Cc: linux-security-module@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
-Cc: Alban Crequy <alban@kinvolk.io>
 Cc: Miklos Szeredi <miklos@szeredi.hu>
 Cc: Mimi Zohar <zohar@linux.vnet.ibm.com>
 Cc: Seth Forshee <seth.forshee@canonical.com>
+Tested-by: Alban Crequy <alban@kinvolk.io>
 Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
 ---
  security/integrity/ima/ima_policy.c | 2 ++
