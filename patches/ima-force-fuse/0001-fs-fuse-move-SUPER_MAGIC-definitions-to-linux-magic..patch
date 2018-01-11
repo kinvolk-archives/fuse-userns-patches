@@ -1,0 +1,76 @@
+From 5aa0e3c3a8d67939940b3469fdae81b9f1a0f920 Mon Sep 17 00:00:00 2001
+Message-Id: <5aa0e3c3a8d67939940b3469fdae81b9f1a0f920.1515682581.git.dongsu@kinvolk.io>
+In-Reply-To: <cover.1515682581.git.dongsu@kinvolk.io>
+References: <cover.1515682581.git.dongsu@kinvolk.io>
+From: Dongsu Park <dongsu@kinvolk.io>
+Date: Thu, 11 Jan 2018 13:47:33 +0100
+Subject: [PATCH 1/2] fs/fuse: move SUPER_MAGIC definitions to linux/magic.h
+
+To be able to use FUSE_*SUPER_MAGIC macros in other subsystems like
+security/integrity/ima, we need to move the definitions from fs/fuse
+to include/uapi/linux/.
+
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-integrity@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Alban Crequy <alban@kinvolk.io>
+Cc: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Mimi Zohar <zohar@linux.vnet.ibm.com>
+Cc: Seth Forshee <seth.forshee@canonical.com>
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
+---
+ fs/fuse/control.c          | 3 +--
+ fs/fuse/inode.c            | 3 +--
+ include/uapi/linux/magic.h | 3 +++
+ 3 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/fs/fuse/control.c b/fs/fuse/control.c
+index b9ea99c5..9015c15c 100644
+--- a/fs/fuse/control.c
++++ b/fs/fuse/control.c
+@@ -10,8 +10,7 @@
+ 
+ #include <linux/init.h>
+ #include <linux/module.h>
+-
+-#define FUSE_CTL_SUPER_MAGIC 0x65735543
++#include <linux/magic.h>
+ 
+ /*
+  * This is non-NULL when the single instance of the control filesystem
+diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+index 8c98edee..57371b77 100644
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -22,6 +22,7 @@
+ #include <linux/exportfs.h>
+ #include <linux/posix_acl.h>
+ #include <linux/pid_namespace.h>
++#include <linux/magic.h>
+ 
+ MODULE_AUTHOR("Miklos Szeredi <miklos@szeredi.hu>");
+ MODULE_DESCRIPTION("Filesystem in Userspace");
+@@ -49,8 +50,6 @@ MODULE_PARM_DESC(max_user_congthresh,
+  "Global limit for the maximum congestion threshold an "
+  "unprivileged user can set");
+ 
+-#define FUSE_SUPER_MAGIC 0x65735546
+-
+ #define FUSE_DEFAULT_BLKSIZE 512
+ 
+ /** Maximum number of outstanding background requests */
+diff --git a/include/uapi/linux/magic.h b/include/uapi/linux/magic.h
+index 1a6fee97..1534e99c 100644
+--- a/include/uapi/linux/magic.h
++++ b/include/uapi/linux/magic.h
+@@ -90,4 +90,7 @@
+ #define BALLOON_KVM_MAGIC	0x13661366
+ #define ZSMALLOC_MAGIC		0x58295829
+ 
++#define FUSE_CTL_SUPER_MAGIC	0x65735543
++#define FUSE_SUPER_MAGIC	0x65735546
++
+ #endif /* __LINUX_MAGIC_H__ */
+-- 
+2.13.6
+

@@ -1,0 +1,59 @@
+From 7a89ce9a7b8264f83fa5d61e146c01571017cca0 Mon Sep 17 00:00:00 2001
+Message-Id: <7a89ce9a7b8264f83fa5d61e146c01571017cca0.1515682581.git.dongsu@kinvolk.io>
+In-Reply-To: <cover.1515682581.git.dongsu@kinvolk.io>
+References: <cover.1515682581.git.dongsu@kinvolk.io>
+From: Dongsu Park <dongsu@kinvolk.io>
+Date: Thu, 11 Jan 2018 13:49:26 +0100
+tSubject: [PATCH 2/2] ima: turn on force option for FUSE in builtin policies
+
+In case of FUSE filesystem being mounted from non-init user namespace,
+[1] cached integrity results could be used maliciously, when the
+userspace FUSE process has changed the underlying files. To be able to
+avoid such cases, we need to turn on the force option in builtin
+policies, for actions of measure and appraise. Then integrity values
+become re-measured and re-appraised. In that way, it's possible to
+prevent cached integrity results from being used.
+
+This patch depends on the patch "ima: define a new policy option named
+force" by Mimi. [2]  For details on testing the force option, please
+refer to the testing report by Alban. [3]
+
+[1] https://www.spinics.net/lists/kernel/msg2683214.html
+[2] https://www.spinics.net/lists/linux-integrity/msg00948.html
+[3] https://marc.info/?l=linux-integrity&m=151559360514676&w=2
+
+Cc: linux-integrity@vger.kernel.org
+Cc: linux-security-module@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Alban Crequy <alban@kinvolk.io>
+Cc: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Mimi Zohar <zohar@linux.vnet.ibm.com>
+Cc: Seth Forshee <seth.forshee@canonical.com>
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
+---
+ security/integrity/ima/ima_policy.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index fddef8f8..8de40d85 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -127,6 +127,7 @@ static struct ima_rule_entry default_measurement_rules[] __ro_after_init = {
+ 	{.action = MEASURE, .func = MODULE_CHECK, .flags = IMA_FUNC},
+ 	{.action = MEASURE, .func = FIRMWARE_CHECK, .flags = IMA_FUNC},
+ 	{.action = MEASURE, .func = POLICY_CHECK, .flags = IMA_FUNC},
++	{.action = MEASURE, .fsmagic = FUSE_SUPER_MAGIC, .flags = IMA_FSMAGIC | IMA_FORCE},
+ };
+ 
+ static struct ima_rule_entry default_appraise_rules[] __ro_after_init = {
+@@ -154,6 +155,7 @@ static struct ima_rule_entry default_appraise_rules[] __ro_after_init = {
+ 	{.action = APPRAISE, .fowner = GLOBAL_ROOT_UID, .fowner_op = &uid_eq,
+ 	 .flags = IMA_FOWNER | IMA_DIGSIG_REQUIRED},
+ #endif
++	{.action = APPRAISE, .fsmagic = FUSE_SUPER_MAGIC, .flags = IMA_FSMAGIC | IMA_FORCE},
+ };
+ 
+ static struct ima_rule_entry secure_boot_rules[] __ro_after_init = {
+-- 
+2.13.6
+

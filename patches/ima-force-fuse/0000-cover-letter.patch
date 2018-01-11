@@ -1,0 +1,43 @@
+From 7a89ce9a7b8264f83fa5d61e146c01571017cca0 Mon Sep 17 00:00:00 2001
+Message-Id: <cover.1515682581.git.dongsu@kinvolk.io>
+From: Dongsu Park <dongsu@kinvolk.io>
+Date: Thu, 11 Jan 2018 15:56:21 +0100
+Subject: [PATCH 0/2] turn on force option for FUSE in builtin policies
+
+In case of FUSE filesystem being mounted from non-init user namespace,
+[1] cached integrity results could be used maliciously, when the
+userspace FUSE process has changed the underlying files. To be able to
+avoid such cases, we need to turn on the force option in builtin
+policies, for actions of measure and appraise. Then integrity values
+become re-measured and re-appraised. In that way, it's possible to
+prevent cached integrity results from being used.
+
+This patchset depends on the patch "ima: define a new policy option
+named force" by Mimi. [2]  For details on testing the force option,
+please refer to the testing report by Alban. [3]
+
+The first patch is for simply moving FUSE_*SUPER_MAGIC macros to
+include/uapi/linux, to be able to use those in other subsystems like
+security/integrity/ima.
+
+The second patch is actually to turn on the force option for FUSE fs
+in IMA.
+
+[1] https://www.spinics.net/lists/kernel/msg2683214.html
+[2] https://www.spinics.net/lists/linux-integrity/msg00948.html
+[3] https://marc.info/?l=linux-integrity&m=151559360514676&w=2
+
+
+Dongsu Park (2):
+  fs/fuse: move SUPER_MAGIC definitions to linux/magic.h
+  ima: turn on force option for FUSE in builtin policies
+
+ fs/fuse/control.c                   | 3 +--
+ fs/fuse/inode.c                     | 3 +--
+ include/uapi/linux/magic.h          | 3 +++
+ security/integrity/ima/ima_policy.c | 2 ++
+ 4 files changed, 7 insertions(+), 4 deletions(-)
+
+-- 
+2.13.6
+
