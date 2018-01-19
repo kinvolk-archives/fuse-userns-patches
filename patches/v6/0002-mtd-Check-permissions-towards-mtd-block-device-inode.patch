@@ -1,0 +1,56 @@
+From debc089befeb0c8f0722df523315f2d0440e5368 Mon Sep 17 00:00:00 2001
+Message-Id: <debc089befeb0c8f0722df523315f2d0440e5368.1516293554.git.dongsu@kinvolk.io>
+In-Reply-To: <cover.1516293554.git.dongsu@kinvolk.io>
+References: <cover.1516293554.git.dongsu@kinvolk.io>
+From: Dongsu Park <dongsu@kinvolk.io>
+Date: Wed, 7 Oct 2015 14:53:33 -0500
+Subject: [PATCH v6 02/13] mtd: Check permissions towards mtd block device
+ inode when mounting
+
+From: Seth Forshee <seth.forshee@canonical.com>
+
+Unprivileged users should not be able to mount mtd block devices
+when they lack sufficient privileges towards the block device
+inode.  Update mount_mtd() to validate that the user has the
+required access to the inode at the specified path. The check
+will be skipped for CAP_SYS_ADMIN, so privileged mounts will
+continue working as before.
+
+Patch v5 is available: https://patchwork.kernel.org/patch/10130595/
+
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Acked-by: Serge Hallyn <serge@hallyn.com>
+Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
+---
+ drivers/mtd/mtdsuper.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
+index d24c8f0d..da3f2c95 100644
+--- a/drivers/mtd/mtdsuper.c
++++ b/drivers/mtd/mtdsuper.c
+@@ -129,6 +129,7 @@ struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
+ #ifdef CONFIG_BLOCK
+ 	struct block_device *bdev;
+ 	int ret, major;
++	int perm;
+ #endif
+ 	int mtdnr;
+ 
+@@ -180,7 +181,10 @@ struct dentry *mount_mtd(struct file_system_type *fs_type, int flags,
+ 	/* try the old way - the hack where we allowed users to mount
+ 	 * /dev/mtdblock$(n) but didn't actually _use_ the blockdev
+ 	 */
+-	bdev = lookup_bdev(dev_name, NO_PERM_CHECK);
++	perm = MAY_READ;
++	if (!(flags & MS_RDONLY))
++		perm |= MAY_WRITE;
++	bdev = lookup_bdev(dev_name, perm);
+ 	if (IS_ERR(bdev)) {
+ 		ret = PTR_ERR(bdev);
+ 		pr_debug("MTDSB: lookup_bdev() returned %d\n", ret);
+-- 
+2.13.6
+

@@ -1,0 +1,51 @@
+From 89ca3c1603536a78ebdec05fbde322da12879588 Mon Sep 17 00:00:00 2001
+Message-Id: <89ca3c1603536a78ebdec05fbde322da12879588.1516293554.git.dongsu@kinvolk.io>
+In-Reply-To: <cover.1516293554.git.dongsu@kinvolk.io>
+References: <cover.1516293554.git.dongsu@kinvolk.io>
+From: Dongsu Park <dongsu@kinvolk.io>
+Date: Thu, 2 Oct 2014 15:51:41 -0500
+Subject: [PATCH v6 12/13] fuse: Allow user namespace mounts
+
+From: Seth Forshee <seth.forshee@canonical.com>
+
+To be able to mount fuse from non-init user namespaces, it's necessary
+to set FS_USERNS_MOUNT flag to fs_flags.
+
+Patch v5 is available: https://patchwork.kernel.org/patch/10130563/
+
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Miklos Szeredi <mszeredi@redhat.com>
+Reviewed-by: Serge Hallyn <serge@hallyn.com>
+Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+[dongsu: add a simple commit messasge]
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
+---
+ fs/fuse/inode.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+index e018dc39..ba63dea1 100644
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -1212,7 +1212,7 @@ static void fuse_kill_sb_anon(struct super_block *sb)
+ static struct file_system_type fuse_fs_type = {
+ 	.owner		= THIS_MODULE,
+ 	.name		= "fuse",
+-	.fs_flags	= FS_HAS_SUBTYPE,
++	.fs_flags	= FS_HAS_SUBTYPE | FS_USERNS_MOUNT,
+ 	.mount		= fuse_mount,
+ 	.kill_sb	= fuse_kill_sb_anon,
+ };
+@@ -1244,7 +1244,7 @@ static struct file_system_type fuseblk_fs_type = {
+ 	.name		= "fuseblk",
+ 	.mount		= fuse_mount_blk,
+ 	.kill_sb	= fuse_kill_sb_blk,
+-	.fs_flags	= FS_REQUIRES_DEV | FS_HAS_SUBTYPE,
++	.fs_flags	= FS_REQUIRES_DEV | FS_HAS_SUBTYPE | FS_USERNS_MOUNT,
+ };
+ MODULE_ALIAS_FS("fuseblk");
+ 
+-- 
+2.13.6
+

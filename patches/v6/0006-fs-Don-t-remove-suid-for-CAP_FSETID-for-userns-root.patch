@@ -1,0 +1,57 @@
+From c1aacd6c27fce999cce3f5fe91f102d3467137a8 Mon Sep 17 00:00:00 2001
+Message-Id: <c1aacd6c27fce999cce3f5fe91f102d3467137a8.1516293554.git.dongsu@kinvolk.io>
+In-Reply-To: <cover.1516293554.git.dongsu@kinvolk.io>
+References: <cover.1516293554.git.dongsu@kinvolk.io>
+From: Dongsu Park <dongsu@kinvolk.io>
+Date: Tue, 26 Apr 2016 14:36:28 -0500
+Subject: [PATCH v6 06/13] fs: Don't remove suid for CAP_FSETID for userns root
+
+From: Seth Forshee <seth.forshee@canonical.com>
+
+Relax the check in should_remove_suid() to keep privileges for
+CAP_FSETID in s_user_ns rather than init_user_ns.
+
+Patch v5 is available: https://patchwork.kernel.org/patch/10130559/
+
+--EWB Changed from ns_capable(sb->s_user_ns, ) to capable_wrt_inode_uidgid
+--Dongsu Make use of a new helper ns_capable_wrt_inode_uidgid
+
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Serge Hallyn <serge@hallyn.com>
+Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
+---
+ fs/inode.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/fs/inode.c b/fs/inode.c
+index 03102d6e..d33b48b0 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -1749,7 +1749,8 @@ EXPORT_SYMBOL(touch_atime);
+  */
+ int should_remove_suid(struct dentry *dentry)
+ {
+-	umode_t mode = d_inode(dentry)->i_mode;
++	struct inode *inode = d_inode(dentry);
++	umode_t mode = inode->i_mode;
+ 	int kill = 0;
+ 
+ 	/* suid always must be killed */
+@@ -1763,7 +1764,10 @@ int should_remove_suid(struct dentry *dentry)
+ 	if (unlikely((mode & S_ISGID) && (mode & S_IXGRP)))
+ 		kill |= ATTR_KILL_SGID;
+ 
+-	if (unlikely(kill && !capable(CAP_FSETID) && S_ISREG(mode)))
++	if (unlikely(kill &&
++		     !ns_capable_wrt_inode_uidgid(dentry->d_sb->s_user_ns,
++			inode, CAP_FSETID) &&
++		     S_ISREG(mode)))
+ 		return kill;
+ 
+ 	return 0;
+-- 
+2.13.6
+

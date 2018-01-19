@@ -1,0 +1,155 @@
+From 788bb29dd94784499c14de2a78441aeb0b65b61d Mon Sep 17 00:00:00 2001
+Message-Id: <cover.1516279942.git.dongsu@kinvolk.io>
+From: Dongsu Park <dongsu@kinvolk.io>
+Date: Thu, 18 Jan 2018 13:52:22 +0100
+Subject: [PATCH v6 00/12] FUSE mounts from non-init user namespaces
+
+This patchset v6 is based on work by Seth Forshee and Eric Biederman.
+The latest patchset was v5:
+https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1571281.html
+
+At the moment, filesystems backed by physical medium can only be mounted
+by real root in the initial user namespace. This restriction exists
+because if it's allowed for root user in non-init user namespaces to
+mount the filesystem, then it effectively allows the user to control the
+underlying source of the filesystem. In case of FUSE, the source would
+mean any underlying device.
+
+However, in many use cases such as containers, it's necessary to allow
+filesystems to be mounted from non-init user namespaces. Goal of this
+patchset is to allow FUSE filesystems to be mounted from non-init user
+namespaces. Support for other filesystems like ext4 are not in the
+scope of this patchset.
+
+Let me describe how to test mounting from non-init user namespaces. It's
+assumed that tests are done via sshfs, a userspace filesystem based on
+FUSE with ssh as backend. Testing system is Fedora 27.
+
+====
+$ sudo dnf install -y sshfs
+$ sudo mkdir -p /mnt/userns
+
+### workaround to get the sshfs permission checks
+$ sudo chown -R $UID:$UID /etc/ssh/ssh_config.d /usr/share/crypto-policies
+
+$ unshare -U -r -m
+# sshfs root@localhost: /mnt/userns
+
+### You can see sshfs being mounted from a non-init user namespace
+# mount | grep sshfs
+root@localhost: on /mnt/userns type fuse.sshfs
+(rw,nosuid,nodev,relatime,user_id=0,group_id=0)
+
+# touch /mnt/userns/test
+# ls -l /mnt/userns/test
+-rw-r--r-- 1 root root 0 Dec 11 19:01 /mnt/userns/test
+====
+
+Open another terminal, check the mountpoint from outside the namespace.
+
+====
+$ grep userns /proc/$(pidof sshfs)/mountinfo
+131 102 0:35 / /mnt/userns rw,nosuid,nodev,relatime - fuse.sshfs
+root@localhost: rw,user_id=0,group_id=0
+====
+
+After all tests are done, you can unmount the filesystem
+inside the namespace.
+
+====
+# fusermount -u /mnt/userns
+====
+
+Changes since v5:
+ * In patch #01, hard-coded mask '0' was replaced with a new macro
+   NO_PERM_CHECK, as suggested by Coly Li.
+ * Split the patch #03 into two parts, one for the introducing helpers
+   {chown,chgrp}_ok(), and the other for allowing superblock owner to
+   change ownership of inodes. We have done it for easy review, as
+   suggested by Luis Rodriguez.
+ * Split the patch #04 into two parts, one for the introducing a helper
+   ns_capable_wrt_inode_uidgid(), and the other for adding additional
+   conditions in should_remove_suid(). We have done it as suggested by
+   Serge Hallyn, to be able to check for ns_capable() with correct user
+   namespace.
+ * Tested IMA. Details are written in
+   https://github.com/kinvolk/fuse-userns-patches/blob/master/tests/TESTING_INTEGRITY.md
+ * A relevant patchset for addressing security issues in IMA was
+   published:
+   https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1587678.html
+
+Changes since v4:
+ * Remove other parts like ext4 to keep the patchset minimal for FUSE
+ * Add and change commit messages
+ * Describe how to test non-init user namespaces
+
+TODO:
+ * improve tests for corner cases in filesystem or integrity
+
+Patches 1-2 deal with an additional flag of lookup_bdev() to check for
+additional inode permission.
+
+Patches 3-9 allow the superblock owner to change ownership of inodes, and
+deal with additional capability checks w.r.t user namespaces.
+
+Patches 10-12 allow FUSE filesystems to be mounted outside of the init
+user namespace.
+
+Patch 13 handles a corner case of non-root users in EVM.
+
+The patchset is based on
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git for/next
+
+The patchset is also available in our github repo:
+  https://github.com/kinvolk/linux/tree/dongsu/fuse-userns-v6-1
+
+Dongsu Park (1):
+  capabilities: introduce a new helper ns_capable_wrt_inode_uidgid
+
+Eric W. Biederman (2):
+  fs: add helpers {chown,chgrp}_ok() to check for uid/gid
+  fs: Allow superblock owner to change ownership of inodes
+
+Seth Forshee (10):
+  block_dev: Support checking inode permissions in lookup_bdev()
+  mtd: Check permissions towards mtd block device inode when mounting
+  fs: Don't remove suid for CAP_FSETID for userns root
+  fs: Allow superblock owner to access do_remount_sb()
+  capabilities: Allow privileged user in s_user_ns to set security.*
+    xattrs
+  fs: Allow CAP_SYS_ADMIN in s_user_ns to freeze and thaw filesystems
+  fuse: Support fuse filesystems outside of init_user_ns
+  fuse: Restrict allow_other to the superblock's namespace or a
+    descendant
+  fuse: Allow user namespace mounts
+  evm: Don't update hmacs in user ns mounts
+
+ drivers/md/bcache/super.c           |  2 +-
+ drivers/md/dm-table.c               |  2 +-
+ drivers/mtd/mtdsuper.c              |  6 +++++-
+ fs/attr.c                           | 34 ++++++++++++++++++++++++++--------
+ fs/block_dev.c                      | 13 ++++++++++---
+ fs/fuse/cuse.c                      |  3 ++-
+ fs/fuse/dev.c                       | 11 ++++++++---
+ fs/fuse/dir.c                       | 16 ++++++++--------
+ fs/fuse/fuse_i.h                    |  6 +++++-
+ fs/fuse/inode.c                     | 35 +++++++++++++++++++++--------------
+ fs/inode.c                          |  8 ++++++--
+ fs/ioctl.c                          |  4 ++--
+ fs/namespace.c                      |  4 ++--
+ fs/proc/base.c                      |  7 +++++++
+ fs/proc/generic.c                   |  7 +++++++
+ fs/proc/proc_sysctl.c               |  7 +++++++
+ fs/quota/quota.c                    |  2 +-
+ include/linux/capability.h          |  2 ++
+ include/linux/fs.h                  |  4 +++-
+ kernel/capability.c                 | 17 +++++++++++++++++
+ kernel/user_namespace.c             |  1 +
+ security/commoncap.c                |  8 ++++++--
+ security/integrity/evm/evm_crypto.c |  3 ++-
+ 23 files changed, 150 insertions(+), 52 deletions(-)
+
+-- 
+2.13.6
+

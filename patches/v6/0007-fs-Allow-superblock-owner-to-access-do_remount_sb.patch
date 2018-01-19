@@ -1,0 +1,54 @@
+From a5ca73f3252e212b8ba8af7051e41ab29ebda044 Mon Sep 17 00:00:00 2001
+Message-Id: <a5ca73f3252e212b8ba8af7051e41ab29ebda044.1516293554.git.dongsu@kinvolk.io>
+In-Reply-To: <cover.1516293554.git.dongsu@kinvolk.io>
+References: <cover.1516293554.git.dongsu@kinvolk.io>
+From: Dongsu Park <dongsu@kinvolk.io>
+Date: Tue, 26 Apr 2016 14:36:29 -0500
+Subject: [PATCH v6 07/13] fs: Allow superblock owner to access do_remount_sb()
+
+From: Seth Forshee <seth.forshee@canonical.com>
+
+Superblock level remounts are currently restricted to global
+CAP_SYS_ADMIN, as is the path for changing the root mount to
+read only on umount. Loosen both of these permission checks to
+also allow CAP_SYS_ADMIN in any namespace which is privileged
+towards the userns which originally mounted the filesystem.
+
+Patch v5 is available: https://patchwork.kernel.org/patch/10130549/
+
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Acked-by: Serge Hallyn <serge@hallyn.com>
+Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
+---
+ fs/namespace.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 9d1374ab..171640d8 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -1589,7 +1589,7 @@ static int do_umount(struct mount *mnt, int flags)
+ 		 * Special case for "unmounting" root ...
+ 		 * we just try to remount it readonly.
+ 		 */
+-		if (!capable(CAP_SYS_ADMIN))
++		if (!ns_capable(sb->s_user_ns, CAP_SYS_ADMIN))
+ 			return -EPERM;
+ 		down_write(&sb->s_umount);
+ 		if (!sb_rdonly(sb))
+@@ -2327,7 +2327,7 @@ static int do_remount(struct path *path, int ms_flags, int sb_flags,
+ 	down_write(&sb->s_umount);
+ 	if (ms_flags & MS_BIND)
+ 		err = change_mount_flags(path->mnt, ms_flags);
+-	else if (!capable(CAP_SYS_ADMIN))
++	else if (!ns_capable(sb->s_user_ns, CAP_SYS_ADMIN))
+ 		err = -EPERM;
+ 	else
+ 		err = do_remount_sb(sb, sb_flags, data, 0);
+-- 
+2.13.6
+

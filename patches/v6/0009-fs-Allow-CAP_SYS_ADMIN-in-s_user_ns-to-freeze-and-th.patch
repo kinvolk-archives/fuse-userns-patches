@@ -1,0 +1,52 @@
+From 1dab1434d816549cafcc7de0f5ec1de3db0b52dd Mon Sep 17 00:00:00 2001
+Message-Id: <1dab1434d816549cafcc7de0f5ec1de3db0b52dd.1516293554.git.dongsu@kinvolk.io>
+In-Reply-To: <cover.1516293554.git.dongsu@kinvolk.io>
+References: <cover.1516293554.git.dongsu@kinvolk.io>
+From: Dongsu Park <dongsu@kinvolk.io>
+Date: Sun, 15 Feb 2015 14:35:35 -0600
+Subject: [PATCH v6 09/13] fs: Allow CAP_SYS_ADMIN in s_user_ns to freeze and
+ thaw filesystems
+
+From: Seth Forshee <seth.forshee@canonical.com>
+
+The user in control of a super block should be allowed to freeze
+and thaw it. Relax the restrictions on the FIFREEZE and FITHAW
+ioctls to require CAP_SYS_ADMIN in s_user_ns.
+
+Patch v5 is available: https://patchwork.kernel.org/patch/10130583/
+
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Reviewed-by: Serge Hallyn <serge@hallyn.com>
+Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
+---
+ fs/ioctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ioctl.c b/fs/ioctl.c
+index 5ace7efb..8c628a8d 100644
+--- a/fs/ioctl.c
++++ b/fs/ioctl.c
+@@ -549,7 +549,7 @@ static int ioctl_fsfreeze(struct file *filp)
+ {
+ 	struct super_block *sb = file_inode(filp)->i_sb;
+ 
+-	if (!capable(CAP_SYS_ADMIN))
++	if (!ns_capable(sb->s_user_ns, CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
+ 	/* If filesystem doesn't support freeze feature, return. */
+@@ -566,7 +566,7 @@ static int ioctl_fsthaw(struct file *filp)
+ {
+ 	struct super_block *sb = file_inode(filp)->i_sb;
+ 
+-	if (!capable(CAP_SYS_ADMIN))
++	if (!ns_capable(sb->s_user_ns, CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
+ 	/* Thaw */
+-- 
+2.13.6
+

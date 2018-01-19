@@ -1,0 +1,64 @@
+From 5c5f4a452ac34063f69100c1a19d3bc9af5c2de9 Mon Sep 17 00:00:00 2001
+Message-Id: <5c5f4a452ac34063f69100c1a19d3bc9af5c2de9.1516293554.git.dongsu@kinvolk.io>
+In-Reply-To: <cover.1516293554.git.dongsu@kinvolk.io>
+References: <cover.1516293554.git.dongsu@kinvolk.io>
+From: Dongsu Park <dongsu@kinvolk.io>
+Date: Thu, 18 Jan 2018 15:37:27 +0100
+Subject: [PATCH v6 03/13] fs: add helpers {chown,chgrp}_ok() to check for
+ uid/gid
+
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+
+Introduce helpers chown_ok() as well as chgrp_ok() to be able to
+check for uid/gid in a cleaner way.
+
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: "Luis R. Rodriguez" <mcgrof@kernel.org>
+Cc: Seth Forshee <seth.forshee@canonical.com>
+Reviewed-by: Serge Hallyn <serge@hallyn.com>
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+Signed-off-by: Dongsu Park <dongsu@kinvolk.io>
+---
+ fs/attr.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/fs/attr.c b/fs/attr.c
+index 12ffdb6f..4ac8efe5 100644
+--- a/fs/attr.c
++++ b/fs/attr.c
+@@ -18,6 +18,30 @@
+ #include <linux/evm.h>
+ #include <linux/ima.h>
+ 
++static bool chown_ok(const struct inode *inode, kuid_t uid)
++{
++	if (uid_eq(current_fsuid(), inode->i_uid) &&
++	    uid_eq(uid, inode->i_uid))
++		return true;
++	if (capable_wrt_inode_uidgid(inode, CAP_CHOWN))
++		return true;
++	if (ns_capable(inode->i_sb->s_user_ns, CAP_CHOWN))
++		return true;
++	return false;
++}
++
++static bool chgrp_ok(const struct inode *inode, kgid_t gid)
++{
++	if (uid_eq(current_fsuid(), inode->i_uid) &&
++	    (in_group_p(gid) || gid_eq(gid, inode->i_gid)))
++		return true;
++	if (capable_wrt_inode_uidgid(inode, CAP_CHOWN))
++		return true;
++	if (ns_capable(inode->i_sb->s_user_ns, CAP_CHOWN))
++		return true;
++	return false;
++}
++
+ /**
+  * setattr_prepare - check if attribute changes to a dentry are allowed
+  * @dentry:	dentry to check
+-- 
+2.13.6
+
