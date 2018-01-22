@@ -28,8 +28,8 @@ The patchset is also available in our github repo:
 
 
 Alban Crequy (2):
-  ima: introduce new fs flag FS_IMA_NO_CACHE
-  fuse: use FS_IMA_NO_CACHE flag
+  fuse: introduce new fs_type flag FS_IMA_NO_CACHE
+  ima: force re-appraisal on filesystems with FS_IMA_NO_CACHE
 
  fs/fuse/inode.c                   |  2 +-
  include/linux/fs.h                |  1 +

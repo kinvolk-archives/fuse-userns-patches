@@ -1,12 +1,14 @@
-From 49c02e4274c230a9eaa01b5f540384624c447fee Mon Sep 17 00:00:00 2001
+From c8e81f11b0e118a5cabeac4df386aad6f420c5d0 Mon Sep 17 00:00:00 2001
 From: Alban Crequy <alban@kinvolk.io>
 Date: Fri, 19 Jan 2018 12:18:28 +0100
-Subject: [RFC PATCH v3 2/2] fuse: use FS_IMA_NO_CACHE flag
+Subject: [RFC PATCH v3 2/2] ima: force re-appraisal on filesystems with
+ FS_IMA_NO_CACHE
 
 From: Alban Crequy <alban@kinvolk.io>
 
-This flag is needed in FUSE because the userspace FUSE process can change
-the underlying files at any time without notifying the kernel.
+This patch forces files to be re-measured, re-appraised and re-audited
+on file systems with the feature flag FS_IMA_NO_CACHE. In that way,
+cached integrity results won't be used.
 
 How to test this:
 
@@ -91,22 +93,52 @@ Cc: Christoph Hellwig <hch@infradead.org>
 Tested-by: Dongsu Park <dongsu@kinvolk.io>
 Signed-off-by: Alban Crequy <alban@kinvolk.io>
 ---
- fs/fuse/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/integrity/ima/ima_main.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 624f18bbfd2b..0a9e516461d5 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1205,7 +1205,7 @@ static void fuse_kill_sb_anon(struct super_block *sb)
- static struct file_system_type fuse_fs_type = {
- 	.owner		= THIS_MODULE,
- 	.name		= "fuse",
--	.fs_flags	= FS_HAS_SUBTYPE,
-+	.fs_flags	= FS_HAS_SUBTYPE | FS_IMA_NO_CACHE,
- 	.mount		= fuse_mount,
- 	.kill_sb	= fuse_kill_sb_anon,
- };
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index 6d78cb26784d..8870a7bbe9b9 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -24,6 +24,7 @@
+ #include <linux/slab.h>
+ #include <linux/xattr.h>
+ #include <linux/ima.h>
++#include <linux/fs.h>
+ 
+ #include "ima.h"
+ 
+@@ -228,9 +229,28 @@ static int process_measurement(struct file *file, char *buf, loff_t size,
+ 				 IMA_APPRAISE_SUBMASK | IMA_APPRAISED_SUBMASK |
+ 				 IMA_ACTION_FLAGS);
+ 
+-	if (test_and_clear_bit(IMA_CHANGE_XATTR, &iint->atomic_flags))
+-		/* reset all flags if ima_inode_setxattr was called */
++	/*
++	 * Reset the measure, appraise and audit cached flags either if:
++	 * - ima_inode_setxattr was called, or
++	 * - based on filesystem feature flag
++	 * forcing the file to be re-evaluated.
++	 */
++	if (test_and_clear_bit(IMA_CHANGE_XATTR, &iint->atomic_flags)) {
+ 		iint->flags &= ~IMA_DONE_MASK;
++	} else if (inode->i_sb->s_type->fs_flags & FS_IMA_NO_CACHE) {
++		if (action & IMA_MEASURE) {
++			iint->measured_pcrs = 0;
++			iint->flags &=
++			    ~(IMA_COLLECTED | IMA_MEASURE | IMA_MEASURED);
++		}
++		if (action & IMA_APPRAISE)
++			iint->flags &=
++			    ~(IMA_COLLECTED | IMA_APPRAISE | IMA_APPRAISED |
++			      IMA_APPRAISE_SUBMASK | IMA_APPRAISED_SUBMASK);
++		if (action & IMA_AUDIT)
++			iint->flags &=
++			    ~(IMA_COLLECTED | IMA_AUDIT | IMA_AUDITED);
++	}
+ 
+ 	/* Determine if already appraised/measured based on bitmask
+ 	 * (IMA_MEASURE, IMA_MEASURED, IMA_XXXX_APPRAISE, IMA_XXXX_APPRAISED,
 -- 
 2.13.6
 
