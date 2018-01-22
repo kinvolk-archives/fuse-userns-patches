@@ -1,4 +1,4 @@
-From c8e81f11b0e118a5cabeac4df386aad6f420c5d0 Mon Sep 17 00:00:00 2001
+From 44e6bada286730c7f046c3740623dd339c7d4796 Mon Sep 17 00:00:00 2001
 From: Alban Crequy <alban@kinvolk.io>
 Date: Fri, 19 Jan 2018 12:18:28 +0100
 Subject: [RFC PATCH v3 2/2] ima: force re-appraisal on filesystems with
@@ -25,7 +25,7 @@ prog1 when the kernel asks for prog2 or vice-versa. In this way, I can
 exec prog1 and get it to print "hello world: 2" without ever replacing
 the file via the VFS, so the kernel is not aware of the change.
 
-The test was done using the branch "alban/fuse-flag-ima-nocache-v2" [3].
+The test was done using the branch "alban/fuse-flag-ima-nocache-v3" [3].
 
 Step by step test procedure:
 
@@ -75,7 +75,7 @@ content.
 
 [1] https://github.com/bbengfort/memfs
 [2] https://github.com/kinvolk/memfs/commits/alban/switch-files
-[3] https://github.com/kinvolk/linux/commits/alban/fuse-flag-ima-nocache-v2
+[3] https://github.com/kinvolk/linux/commits/alban/fuse-flag-ima-nocache-v3
 [4] https://github.com/kinvolk/fuse-userns-patches/commit/cf1f5750cab0
 
 Cc: linux-kernel@vger.kernel.org
