@@ -2,7 +2,7 @@ From 86832c6adb256f29f44b6229222b80964fc8cfcc Mon Sep 17 00:00:00 2001
 Message-Id: <86832c6adb256f29f44b6229222b80964fc8cfcc.1517314847.git.dongsu@kinvolk.io>
 In-Reply-To: <cover.1517314847.git.dongsu@kinvolk.io>
 References: <cover.1517314847.git.dongsu@kinvolk.io>
-From: Alban Crequy <alban@kinvolk.io>
+From: Dongsu Park <dongsu@kinvolk.io>
 Date: Tue, 16 Jan 2018 10:22:24 +0100
 Subject: [RFC PATCH v4 1/2] fuse: introduce new fs_type flag FS_IMA_NO_CACHE
 
