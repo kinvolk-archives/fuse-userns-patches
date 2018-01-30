@@ -24,9 +24,9 @@ Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 Cc: Mimi Zohar <zohar@linux.vnet.ibm.com>
 Cc: Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
 Cc: James Morris <james.l.morris@oracle.com>
-Cc: "Serge E. Hallyn" <serge@hallyn.com>
-Cc: Seth Forshee <seth.forshee@canonical.com>
 Cc: Christoph Hellwig <hch@infradead.org>
+Acked-by: "Serge E. Hallyn" <serge@hallyn.com>
+Acked-by: Seth Forshee <seth.forshee@canonical.com>
 Tested-by: Dongsu Park <dongsu@kinvolk.io>
 Signed-off-by: Alban Crequy <alban@kinvolk.io>
 ---
