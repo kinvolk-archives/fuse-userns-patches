@@ -31,10 +31,8 @@ The patchset is also available in our github repo:
   https://github.com/kinvolk/linux/tree/dongsu/fuse-flag-ima-nocache-v4
 
 
-Alban Crequy (1):
+Alban Crequy (2):
   fuse: introduce new fs_type flag FS_IMA_NO_CACHE
-
-Dongsu Park (1):
   ima: force re-appraisal on filesystems with FS_IMA_NO_CACHE
 
  fs/fuse/inode.c                   |  2 +-
