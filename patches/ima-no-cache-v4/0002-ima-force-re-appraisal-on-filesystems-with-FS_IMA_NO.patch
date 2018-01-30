@@ -4,7 +4,7 @@ In-Reply-To: <cover.1517314847.git.dongsu@kinvolk.io>
 References: <cover.1517314847.git.dongsu@kinvolk.io>
 From: Dongsu Park <dongsu@kinvolk.io>
 Date: Tue, 30 Jan 2018 13:18:03 +0100
-Subject: [PATCH 2/2] ima: force re-appraisal on filesystems with
+Subject: [RFC PATCH v4 2/2] ima: force re-appraisal on filesystems with
  FS_IMA_NO_CACHE
 
 From: Alban Crequy <alban@kinvolk.io>
