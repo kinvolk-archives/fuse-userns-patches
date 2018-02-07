@@ -1,0 +1,51 @@
+From 32720253472ebc444da9561834a5a5f2c7cbd7c1 Mon Sep 17 00:00:00 2001
+Message-Id: <cover.1517999503.git.dongsu@kinvolk.io>
+From: Dongsu Park <dongsu@kinvolk.io>
+Date: Wed, 7 Feb 2018 11:31:43 +0100
+Subject: [RFC PATCH v5 0/2] ima,fuse: introduce new fs flag FS_IMA_NO_CACHE
+
+This patchset v5 introduces a new fs flag FS_IMA_NO_CACHE and uses it in
+FUSE. This forces files to be re-measured, re-appraised and re-audited
+on file systems with the feature flag FS_IMA_NO_CACHE. In that way,
+cached integrity results won't be used.
+
+There was a previous attempt (unmerged) with a IMA option named "force" and using
+that option for FUSE filesystems. These patches use a different approach
+so that the IMA subsystem does not need to know about FUSE.
+- https://www.spinics.net/lists/linux-integrity/msg00948.html
+- https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1584131.html
+
+Changes since v1: https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1587390.html
+- include linux-fsdevel mailing list in cc
+- mark patch as RFC
+- based on next-integrity, without other unmerged FUSE / IMA patches
+
+Changes since v2: https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1587678.html
+- rename flag to FS_IMA_NO_CACHE
+- split patch into 2
+
+Changes since v3: https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1592393.html
+- make the code simpler by resetting IMA_DONE_MASK
+
+Changes since v4: https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1598387.html
+- add Acked-by from Miklos
+- change ordering of patches as suggested by Miklos
+- improve commit messages
+- code diff since v4 is empty: only commit messages, ordering were changed
+
+The patchset is also available in our github repo:
+  https://github.com/kinvolk/linux/tree/dongsu/fuse-flag-ima-nocache-v5
+
+
+Alban Crequy (2):
+  ima: force re-appraisal on filesystems with FS_IMA_NO_CACHE
+  fuse: introduce new fs_type flag FS_IMA_NO_CACHE
+
+ fs/fuse/inode.c                   |  2 +-
+ include/linux/fs.h                |  1 +
+ security/integrity/ima/ima_main.c | 15 +++++++++++++--
+ 3 files changed, 15 insertions(+), 3 deletions(-)
+
+-- 
+2.13.6
+
