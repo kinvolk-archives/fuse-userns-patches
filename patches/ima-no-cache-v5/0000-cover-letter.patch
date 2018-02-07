@@ -29,6 +29,8 @@ Changes since v3: https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1
 
 Changes since v4: https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1598387.html
 - change ordering of patches as suggested by Miklos
+- improve commit messages
+- code diff since v4 is empty: only commit messages, ordering were changed
 
 The patchset is also available in our github repo:
   https://github.com/kinvolk/linux/tree/dongsu/fuse-flag-ima-nocache-v5
