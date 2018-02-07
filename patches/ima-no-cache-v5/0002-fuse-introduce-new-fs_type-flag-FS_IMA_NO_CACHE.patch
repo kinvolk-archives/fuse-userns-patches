@@ -2,9 +2,11 @@ From 32720253472ebc444da9561834a5a5f2c7cbd7c1 Mon Sep 17 00:00:00 2001
 Message-Id: <32720253472ebc444da9561834a5a5f2c7cbd7c1.1517999503.git.dongsu@kinvolk.io>
 In-Reply-To: <cover.1517999503.git.dongsu@kinvolk.io>
 References: <cover.1517999503.git.dongsu@kinvolk.io>
-From: Alban Crequy <alban@kinvolk.io>
+From: Dongsu Park <dongsu@kinvolk.io>
 Date: Tue, 16 Jan 2018 10:22:24 +0100
 Subject: [RFC PATCH v5 2/2] fuse: introduce new fs_type flag FS_IMA_NO_CACHE
+
+From: Alban Crequy <alban@kinvolk.io>
 
 This new fs_type flag FS_IMA_NO_CACHE means files should be re-measured,
 re-appraised and re-audited each time. Cached integrity results should

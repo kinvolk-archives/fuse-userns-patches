@@ -2,10 +2,12 @@ From 9b3794980f61bdb5d5f92fe0ae620491be857a8a Mon Sep 17 00:00:00 2001
 Message-Id: <9b3794980f61bdb5d5f92fe0ae620491be857a8a.1517999503.git.dongsu@kinvolk.io>
 In-Reply-To: <cover.1517999503.git.dongsu@kinvolk.io>
 References: <cover.1517999503.git.dongsu@kinvolk.io>
-From: Alban Crequy <alban@kinvolk.io>
+From: Dongsu Park <dongsu@kinvolk.io>
 Date: Tue, 30 Jan 2018 13:18:03 +0100
 Subject: [RFC PATCH v5 1/2] ima: force re-appraisal on filesystems with
  FS_IMA_NO_CACHE
+
+From: Alban Crequy <alban@kinvolk.io>
 
 This patch forces files to be re-measured, re-appraised and re-audited
 on file systems with the feature flag FS_IMA_NO_CACHE. In that way,
