@@ -28,6 +28,7 @@ Changes since v3: https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1
 - make the code simpler by resetting IMA_DONE_MASK
 
 Changes since v4: https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1598387.html
+- add Acked-by from Miklos
 - change ordering of patches as suggested by Miklos
 - improve commit messages
 - code diff since v4 is empty: only commit messages, ordering were changed
