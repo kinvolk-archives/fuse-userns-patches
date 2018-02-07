@@ -13,7 +13,11 @@ re-appraised and re-audited each time. Cached integrity results should
 not be used.
 
 It is useful in FUSE because the userspace FUSE process can change the
-underlying files at any time without notifying the kernel.
+underlying files at any time without notifying the kernel. FUSE can be
+mounted by unprivileged users either today with fusermount installed
+with setuid, or soon with the upcoming patches to allow FUSE mounts in
+a non-init user namespace. That makes the issue more visible than for
+network filesystems where unprivileged users cannot mount.
 
 Cc: linux-kernel@vger.kernel.org
 Cc: linux-integrity@vger.kernel.org
